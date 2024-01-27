@@ -1,0 +1,11 @@
+[project]
+name = "leapfrogai-backend-chromadb"
+version = "0.1.0"
+description = "LeapfrogAI backend for ChromaDB"
+authors = [{ name = "LeapfrogAI Authors", email = "ai@defenseunicorns.com" }]
+license = { file = "LICENSE" }
+readme = "README.md"
+
+requires-python = ">=3.11.4, <3.12"
+
+dependencies = ["chromadb >= 0.4.22", "uvicorn>=0.27.0"]
