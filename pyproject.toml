@@ -8,4 +8,12 @@ readme = "README.md"
 
 requires-python = ">=3.11.4, <3.12"
 
-dependencies = ["chromadb >= 0.4.22", "uvicorn>=0.27.0"]
+dependencies = [
+    "chromadb >= 0.4.22",
+    "uvicorn>=0.27.0",
+    "python-multipart>=0.0.6",
+    "langchain>=0.1.4",
+    "sentence-transformers>=2.3.0",
+    "tiktoken>=0.5.2",
+    "pypdf>=4.0.1"
+]
