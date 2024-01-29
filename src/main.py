@@ -41,6 +41,7 @@ async def upload(file: UploadFile):
         contents = await file.read()
         file_folder = "files/"
         full_file_path = file_folder + file.filename
+        # TODO: Change this to be in memory
         if not os.path.isfile(full_file_path):
             if not os.path.exists(file_folder):
                 os.mkdir(file_folder)

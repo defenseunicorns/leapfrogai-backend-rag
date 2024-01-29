@@ -30,6 +30,7 @@ class DocumentStore:
 
         return False
 
+    # TODO: USE LLAMAINDEX
     def query_langchain(self, query_text):
         docs = self.chroma_db.similarity_search(query_text, k=3)
         return docs
