@@ -8,13 +8,16 @@ aiohttp==3.9.2
     # via
     #   langchain
     #   langchain-community
+    #   llama-index
 aiosignal==1.3.1
     # via aiohttp
 annotated-types==0.6.0
     # via pydantic
 anyio==4.2.0
     # via
+    #   httpx
     #   langchain-core
+    #   openai
     #   starlette
     #   watchfiles
 asgiref==3.7.2
@@ -34,6 +37,8 @@ cachetools==5.3.2
     # via google-auth
 certifi==2023.11.17
     # via
+    #   httpcore
+    #   httpx
     #   kubernetes
     #   pulsar-client
     #   requests
@@ -54,10 +59,14 @@ dataclasses-json==0.6.3
     # via
     #   langchain
     #   langchain-community
+    #   llama-index
 deprecated==1.2.14
     # via
+    #   llama-index
     #   opentelemetry-api
     #   opentelemetry-exporter-otlp-proto-grpc
+distro==1.9.0
+    # via openai
 fastapi==0.109.0
     # via chromadb
 filelock==3.13.1
@@ -75,6 +84,7 @@ frozenlist==1.4.1
 fsspec==2023.12.2
     # via
     #   huggingface-hub
+    #   llama-index
     #   torch
 google-auth==2.27.0
     # via kubernetes
@@ -87,9 +97,17 @@ grpcio==1.60.0
     #   chromadb
     #   opentelemetry-exporter-otlp-proto-grpc
 h11==0.14.0
-    # via uvicorn
+    # via
+    #   httpcore
+    #   uvicorn
+httpcore==1.0.2
+    # via httpx
 httptools==0.6.1
     # via uvicorn
+httpx==0.26.0
+    # via
+    #   llama-index
+    #   openai
 huggingface-hub==0.20.3
     # via
     #   sentence-transformers
@@ -100,6 +118,7 @@ humanfriendly==10.0
 idna==3.6
     # via
     #   anyio
+    #   httpx
     #   requests
     #   yarl
 importlib-metadata==6.11.0
@@ -133,6 +152,8 @@ langsmith==0.0.84
     #   langchain
     #   langchain-community
     #   langchain-core
+llama-index==0.9.39
+    # via leapfrogai-backend-chromadb (pyproject.toml)
 markupsafe==2.1.4
     # via jinja2
 marshmallow==3.20.2
@@ -149,17 +170,25 @@ multidict==6.0.4
     #   yarl
 mypy-extensions==1.0.0
     # via typing-inspect
+nest-asyncio==1.6.0
+    # via llama-index
 networkx==3.2.1
-    # via torch
+    # via
+    #   llama-index
+    #   torch
 nltk==3.8.1
-    # via sentence-transformers
+    # via
+    #   llama-index
+    #   sentence-transformers
 numpy==1.26.3
     # via
     #   chroma-hnswlib
     #   chromadb
     #   langchain
     #   langchain-community
+    #   llama-index
     #   onnxruntime
+    #   pandas
     #   scikit-learn
     #   scipy
     #   sentence-transformers
@@ -201,6 +230,8 @@ oauthlib==3.2.2
     #   requests-oauthlib
 onnxruntime==1.16.3
     # via chromadb
+openai==1.10.0
+    # via llama-index
 opentelemetry-api==1.22.0
     # via
     #   chromadb
@@ -248,6 +279,8 @@ packaging==23.2
     #   marshmallow
     #   onnxruntime
     #   transformers
+pandas==2.2.0
+    # via llama-index
 pillow==10.2.0
     # via sentence-transformers
 posthog==3.3.3
@@ -272,6 +305,7 @@ pydantic==2.6.0
     #   langchain
     #   langchain-core
     #   langsmith
+    #   openai
 pydantic-core==2.16.1
     # via pydantic
 pypdf==4.0.1
@@ -283,11 +317,16 @@ pyproject-hooks==1.0.0
 python-dateutil==2.8.2
     # via
     #   kubernetes
+    #   pandas
     #   posthog
 python-dotenv==1.0.1
-    # via uvicorn
+    # via
+    #   leapfrogai-backend-chromadb (pyproject.toml)
+    #   uvicorn
 python-multipart==0.0.6
     # via leapfrogai-backend-chromadb (pyproject.toml)
+pytz==2023.4
+    # via pandas
 pyyaml==6.0.1
     # via
     #   chromadb
@@ -312,6 +351,7 @@ requests==2.31.0
     #   langchain-community
     #   langchain-core
     #   langsmith
+    #   llama-index
     #   posthog
     #   requests-oauthlib
     #   tiktoken
@@ -338,11 +378,15 @@ six==1.16.0
     #   posthog
     #   python-dateutil
 sniffio==1.3.0
-    # via anyio
-sqlalchemy==2.0.25
+    # via
+    #   anyio
+    #   httpx
+    #   openai
+sqlalchemy[asyncio]==2.0.25
     # via
     #   langchain
     #   langchain-community
+    #   llama-index
 starlette==0.35.1
     # via fastapi
 sympy==1.12
@@ -355,10 +399,13 @@ tenacity==8.2.3
     #   langchain
     #   langchain-community
     #   langchain-core
+    #   llama-index
 threadpoolctl==3.2.0
     # via scikit-learn
 tiktoken==0.5.2
-    # via leapfrogai-backend-chromadb (pyproject.toml)
+    # via
+    #   leapfrogai-backend-chromadb (pyproject.toml)
+    #   llama-index
 tokenizers==0.15.1
     # via
     #   chromadb
@@ -370,6 +417,7 @@ tqdm==4.66.1
     #   chromadb
     #   huggingface-hub
     #   nltk
+    #   openai
     #   sentence-transformers
     #   transformers
 transformers==4.37.2
@@ -383,6 +431,8 @@ typing-extensions==4.9.0
     #   chromadb
     #   fastapi
     #   huggingface-hub
+    #   llama-index
+    #   openai
     #   opentelemetry-sdk
     #   pydantic
     #   pydantic-core
@@ -391,7 +441,11 @@ typing-extensions==4.9.0
     #   typer
     #   typing-inspect
 typing-inspect==0.9.0
-    # via dataclasses-json
+    # via
+    #   dataclasses-json
+    #   llama-index
+tzdata==2023.4
+    # via pandas
 urllib3==2.1.0
     # via
     #   kubernetes

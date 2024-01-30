@@ -2,17 +2,46 @@ import concurrent.futures
 import os
 import time
 from typing import List
+import tempfile
 
 from langchain.docstore.document import Document
-from langchain.document_loaders import (CSVLoader, Docx2txtLoader, PyPDFLoader,
+from langchain.document_loaders import (CSVLoader, Docx2txtLoader,
                                         UnstructuredFileLoader,
                                         UnstructuredHTMLLoader,
                                         UnstructuredMarkdownLoader,
                                         UnstructuredPowerPointLoader)
+from llama_index import download_loader
 from langchain.text_splitter import TokenTextSplitter
 
 
 # Chroma
+
+def load_file(file_path) -> List[Document]:
+    _, file_extension = os.path.splitext(file_path)
+    data: List[Document]
+    if file_extension.lower() == '.html':
+        loader = UnstructuredHTMLLoader(file_path)
+        return loader.load()
+    elif file_extension.lower() == '.pdf':
+        pdf_reader = download_loader("PDFReader")
+        loader = pdf_reader()
+        return loader.load_data(file=file_path)
+    elif file_extension.lower() == '.md':
+        loader = UnstructuredMarkdownLoader(file_path)
+        return loader.load()
+    elif file_extension.lower() == '.csv':
+        loader = CSVLoader(file_path)
+        return loader.load()
+    elif file_extension.lower() == '.pptx':
+        loader = UnstructuredPowerPointLoader(file_path)
+        return loader.load()
+    elif file_extension.lower() == '.docx':
+        loader = Docx2txtLoader(file_path)
+        return loader.load()
+    else:
+        # Perform action for other files or skip
+        return UnstructuredFileLoader(file_path).load()
+
 
 class Ingest:
     def __init__(self, index_name, client, collection):
@@ -20,35 +49,11 @@ class Ingest:
         self.client = client
         self.collection = collection
 
-    def load_file(self, file_path) -> List[Document]:
-        _, file_extension = os.path.splitext(file_path)
-        data: List[Document]
-        if file_extension.lower() == '.html':
-            loader = UnstructuredHTMLLoader(file_path)
-            return loader.load()
-        elif file_extension.lower() == '.pdf':
-            loader = PyPDFLoader(file_path)
-            return loader.load()
-        elif file_extension.lower() == '.md':
-            loader = UnstructuredMarkdownLoader(file_path)
-            return loader.load()
-        elif file_extension.lower() == '.csv':
-            loader = CSVLoader(file_path)
-            return loader.load()
-        elif file_extension.lower() == '.pptx':
-            loader = UnstructuredPowerPointLoader(file_path)
-            return loader.load()
-        elif file_extension.lower() == '.docx':
-            loader = Docx2txtLoader(file_path)
-            return loader.load()
-        else:
-            # Perform action for other files or skip
-            return UnstructuredFileLoader(file_path).load()
-
     def process_file(self, file_path, chunk_size=1000, chunk_overlap=400):
-        text_splitter = TokenTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+        # disallowed_special is set so that api or technical documents that contain special tokens can be loaded
+        text_splitter = TokenTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, disallowed_special=())
         try:
-            data = self.load_file(file_path=file_path)
+            data = load_file(file_path=file_path)
             texts = text_splitter.split_documents(data)
             contents = [d.page_content for d in texts]
             metadatas = [d.metadata for d in texts]
@@ -88,26 +93,16 @@ class Ingest:
 
     def process(self, item_queue, total_items):
         max_threads = 24
-        starttime = time.time()
+        start_time = time.time()
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
             executor.map(self.process_items, item_queue)
-        print('That took {} seconds'.format(time.time() - starttime))
+        print('That took {} seconds'.format(time.time() - start_time))
         print(f"processing a total of {total_items} of files")
 
-    def load_data(self, folder_path):
-        item_queue = []
-        total_items = 0
-
-        # Add items to the queue
-        for root, _, files in os.walk(folder_path):
-            for file in files:
-                group = []
-                file_path = os.path.join(root, file)
-                _, file_extension = os.path.splitext(file_path)
-                # only do file types we want to process
-                if file_extension.lower() in ('.pdf', '.md', '.txt', '.html', '.pptx', '.docx'):
-                    group.append(file_path)
-                    total_items = total_items + 1
-                item_queue.append(group)
-
-        self.process(item_queue, total_items)
+    def load_file_bytes(self, file_bytes, file_name):
+        _, file_extension = os.path.splitext(file_name)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as fp:
+            fp.name = fp.name
+            fp.write(file_bytes)
+            fp.close()
+            self.process_file(fp.name)
