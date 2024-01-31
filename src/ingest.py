@@ -4,11 +4,11 @@ import uuid
 from typing import List
 
 from langchain.docstore.document import Document
-from langchain.document_loaders import (CSVLoader, Docx2txtLoader,
-                                        UnstructuredFileLoader,
-                                        UnstructuredHTMLLoader,
-                                        UnstructuredMarkdownLoader,
-                                        UnstructuredPowerPointLoader)
+from langchain_community.document_loaders import (CSVLoader, Docx2txtLoader,
+                                                  UnstructuredFileLoader,
+                                                  UnstructuredHTMLLoader,
+                                                  UnstructuredMarkdownLoader,
+                                                  UnstructuredPowerPointLoader)
 from langchain.text_splitter import TokenTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 

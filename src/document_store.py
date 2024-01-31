@@ -7,7 +7,7 @@ import httpx
 from chromadb import ClientAPI, GetResult
 from chromadb.api.models import Collection
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_core.embeddings import Embeddings
 from llama_index import Response
 from llama_index import VectorStoreIndex, ServiceContext
