@@ -47,7 +47,7 @@ charset-normalizer==3.3.2
 chroma-hnswlib==0.7.3
     # via chromadb
 chromadb==0.4.22
-    # via leapfrogai-backend-chromadb (pyproject.toml)
+    # via leapfrogai-backend-rag (pyproject.toml)
 click==8.1.7
     # via
     #   nltk
@@ -140,7 +140,7 @@ jsonpointer==2.4
 kubernetes==29.0.0
     # via chromadb
 langchain==0.1.4
-    # via leapfrogai-backend-chromadb (pyproject.toml)
+    # via leapfrogai-backend-rag (pyproject.toml)
 langchain-community==0.0.16
     # via langchain
 langchain-core==0.1.16
@@ -153,7 +153,7 @@ langsmith==0.0.84
     #   langchain-community
     #   langchain-core
 llama-index==0.9.39
-    # via leapfrogai-backend-chromadb (pyproject.toml)
+    # via leapfrogai-backend-rag (pyproject.toml)
 markupsafe==2.1.4
     # via jinja2
 marshmallow==3.20.2
@@ -309,7 +309,7 @@ pydantic==2.6.0
 pydantic-core==2.16.1
     # via pydantic
 pypdf==4.0.1
-    # via leapfrogai-backend-chromadb (pyproject.toml)
+    # via leapfrogai-backend-rag (pyproject.toml)
 pypika==0.48.9
     # via chromadb
 pyproject-hooks==1.0.0
@@ -321,10 +321,10 @@ python-dateutil==2.8.2
     #   posthog
 python-dotenv==1.0.1
     # via
-    #   leapfrogai-backend-chromadb (pyproject.toml)
+    #   leapfrogai-backend-rag (pyproject.toml)
     #   uvicorn
 python-multipart==0.0.6
-    # via leapfrogai-backend-chromadb (pyproject.toml)
+    # via leapfrogai-backend-rag (pyproject.toml)
 pytz==2023.4
     # via pandas
 pyyaml==6.0.1
@@ -369,7 +369,7 @@ scipy==1.12.0
     #   scikit-learn
     #   sentence-transformers
 sentence-transformers==2.3.0
-    # via leapfrogai-backend-chromadb (pyproject.toml)
+    # via leapfrogai-backend-rag (pyproject.toml)
 sentencepiece==0.1.99
     # via sentence-transformers
 six==1.16.0
@@ -404,7 +404,7 @@ threadpoolctl==3.2.0
     # via scikit-learn
 tiktoken==0.5.2
     # via
-    #   leapfrogai-backend-chromadb (pyproject.toml)
+    #   leapfrogai-backend-rag (pyproject.toml)
     #   llama-index
 tokenizers==0.15.1
     # via
@@ -453,7 +453,7 @@ urllib3==2.1.0
 uvicorn[standard]==0.27.0.post1
     # via
     #   chromadb
-    #   leapfrogai-backend-chromadb (pyproject.toml)
+    #   leapfrogai-backend-rag (pyproject.toml)
 uvloop==0.19.0
     # via uvicorn
 watchfiles==0.21.0

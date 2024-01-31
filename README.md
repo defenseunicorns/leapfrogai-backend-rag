@@ -1,8 +1,8 @@
-# LeapfrogAI ChromaDB Backend
+# LeapfrogAI RAG Backend
 
 ## Description
 
-Stand alone ChromaDB for LeapfrogAI.
+Stand alone Retrieval Augmented Generation Backend (RAG) for LeapfrogAI that used ChromaDB, LangChain, Llama Index, and FastAPI.
 
 ## Instructions
 
