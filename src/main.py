@@ -1,11 +1,14 @@
 import os
 import sys
+from typing import List
+
 import uvicorn
-from fastapi import FastAPI, UploadFile, status, HTTPException
+from dotenv import load_dotenv
+from fastapi import FastAPI, UploadFile, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+
 from document_store import DocumentStore
-from dotenv import load_dotenv
 
 path = os.getcwd()
 path = os.path.join(path, ".env")
@@ -64,6 +67,17 @@ def query(query_data: QueryModel):
     outside_context = doc_store.query_llamaindex(query_data.input)
     debug("The returned context is: " + str(outside_context))
     return {"results": outside_context}
+
+
+@app.post("/delete/")
+def query(doc_ids: List[str] = Query(None)):
+    if len(doc_ids) > 0:
+        doc_store.delete_documents(doc_ids)
+
+
+@app.get("/list/")
+def query():
+    return doc_store.get_all_documents()
 
 
 @app.get("/health/", status_code=200)

@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import chromadb
 import httpx
@@ -42,6 +43,18 @@ class DocumentStore:
         self.index = VectorStoreIndex.from_documents(
             [], storage_context=storage_context, service_context=service_context
         )
+
+    def get_all_documents(self):
+        all_documents = self.collection.get(include=['metadatas'])
+        all_metadatas = all_documents['metadatas']
+        unique_documents: dict[str, str] = {}
+        for metadata in all_metadatas:
+            unique_documents[metadata['uuid']] = metadata['source']
+        return unique_documents
+
+    def delete_documents(self, uuids: List[str]):
+        for uuid in uuids:
+            self.collection.delete(where={'uuid': uuid})
 
     # Try catch fails if collection cannot be found
     def does_collection_exist(self, collection_name):
