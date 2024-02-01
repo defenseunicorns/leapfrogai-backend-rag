@@ -1,11 +1,22 @@
 [project]
-name = "leapfrogai-backend-chromadb"
+name = "leapfrogai-backend-rag"
 version = "0.1.0"
-description = "LeapfrogAI backend for ChromaDB"
+description = "LeapfrogAI backend for Retrieval Augmented Generation (RAG)"
 authors = [{ name = "LeapfrogAI Authors", email = "ai@defenseunicorns.com" }]
 license = { file = "LICENSE" }
 readme = "README.md"
 
 requires-python = ">=3.11.4, <3.12"
 
-dependencies = ["chromadb >= 0.4.22", "uvicorn>=0.27.0"]
+dependencies = [
+    "chromadb >= 0.4.22",
+    "uvicorn>=0.27.0",
+    "python-multipart>=0.0.6",
+    "langchain>=0.1.4",
+    "sentence-transformers>=2.3.0",
+    "tiktoken>=0.5.2",
+    "pypdf>=4.0.1",
+    "llama-index>=0.9.39",
+    "python-dotenv>=1.0.1",
+    "langchain-community>=0.0.16"
+]

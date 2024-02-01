@@ -8,14 +8,15 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt --user
 
-ARG CHROMADB_PORT=8000
-ENV CHROMADB_PORT=${CHROMADB_PORT}
+FROM ghcr.io/defenseunicorns/leapfrogai/python:3.11-${ARCH}
 
-ARG CHROMADB_DATA_PATH=/leapfrogai/chromadb
-ENV CHROMADB_DATA_PATH=${CHROMADB_DATA_PATH}
+WORKDIR /leapfrogai
 
-USER nonroot
+COPY --from=builder /home/nonroot/.local/lib/python3.11/site-packages /home/nonroot/.local/lib/python3.11/site-packages
+COPY --from=builder /home/nonroot/.local/bin/uvicorn /home/nonroot/.local/bin/uvicorn
 
-RUN mkdir -p ${CHROMADB_DATA_PATH}
+COPY src/ .
 
-ENTRYPOINT /home/nonroot/.local/bin/chroma run --path ${CHROMADB_DATA_PATH} --host 0.0.0.0 --port ${CHROMADB_PORT}
+EXPOSE 8000
+
+ENTRYPOINT ["/home/nonroot/.local/bin/uvicorn", "main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000"]
