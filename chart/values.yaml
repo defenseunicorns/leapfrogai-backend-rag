@@ -5,13 +5,13 @@ rag:
   replicas: 1
 
 env:
-  openai_api_base: "https://localhost:8080/openai/v1/"
-  openai_api_key: "my-test-key"
+  openaiApiBase: "https://localhost:8080/openai/v1/"
+  openaiApiKey: "my-test-key"
   model: "llamacpp"
   temperature: "0.2"
-  context_window: "8192"
-  max_output: "1024"
-  chunk_size: "1024"
-  overlap_size: "20"
-  response_mode: "refine"
-  ssl_verification: "False"
+  contextWindow: "8192"
+  maxOutput: "1024"
+  chunkSize: "1024"
+  overlapSize: "20"
+  responseMode: "refine"
+  sslVerification: "False"
