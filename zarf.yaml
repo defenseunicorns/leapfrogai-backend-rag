@@ -12,6 +12,13 @@ constants:
   - name: NAME
     value: "###ZARF_PKG_TMPL_NAME###"
 
+variables:
+  - name: PREFIX
+    description: Prefix for requests to the application
+    default: ""
+    prompt: true
+    sensitive: false
+
 components:
   - name: rag
     require: true
