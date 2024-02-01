@@ -20,25 +20,25 @@ spec:
           imagePullPolicy: Always
           env:
           - name: OPENAI_API_BASE
-            value: {{ .Values.env.openaiApiBase }}
+            value: "{{ .Values.env.openaiApiBase }}"
           - name: OPENAI_API_KEY
-            value: {{ .Values.env.openaiApiKey }}
+            value: "{{ .Values.env.openaiApiKey }}"
           - name: MODEL
-            value: {{ .Values.env.model }}
+            value: "{{ .Values.env.model }}"
           - name: TEMPERATURE
-            value: {{ .Values.env.temperature }}
+            value: "{{ .Values.env.temperature }}"
           - name: CONTEXT_WINDOW
-            value: {{ .Values.env.contextWindow }}
+            value: "{{ .Values.env.contextWindow }}"
           - name: MAX_OUTPUT
-            value: {{ .Values.env.maxOutput }}
+            value: "{{ .Values.env.maxOutput }}"
           - name: CHUNK_SIZE
-            value: {{ .Values.env.chunkSize }}
+            value: "{{ .Values.env.chunkSize }}"
           - name: OVERLAP_SIZE
-            value: {{ .Values.env.overlapSize }}
+            value: "{{ .Values.env.overlapSize }}"
           - name: RESPONSE_MODE
-            value: {{ .Values.env.responseMode }}
+            value: "{{ .Values.env.responseMode }}"
           - name: SSL_VERIFICATION
-            value: {{ .Values.env.sslVerification }}
+            value: "{{ .Values.env.sslVerification }}"
           ports:
             - containerPort: 8000
           livenessProbe:
