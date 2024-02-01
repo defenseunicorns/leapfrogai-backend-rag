@@ -20,25 +20,25 @@ spec:
           imagePullPolicy: Always
           env:
           - name: OPENAI_API_BASE
-            value: {{ .Values.rag.configs.openai_api_base }}
+            value: {{ .Values.env.openai_api_base }}
           - name: OPENAI_API_KEY
-            value: {{ .Values.rag.configs.openai_api_key }}
+            value: {{ .Values.env.openai_api_key }}
           - name: MODEL
-            value: {{ .Values.rag.configs.model }}
+            value: {{ .Values.env.model }}
           - name: TEMPERATURE
-            value: {{ .Values.rag.configs.temperature }}
+            value: {{ .Values.env.temperature }}
           - name: CONTEXT_WINDOW
-            value: {{ .Values.rag.configs.context_window }}
+            value: {{ .Values.env.context_window }}
           - name: MAX_OUTPUT
-            value: {{ .Values.rag.configs.max_output }}
+            value: {{ .Values.env.max_output }}
           - name: CHUNK_SIZE
-            value: {{ .Values.rag.configs.chunk_size }}
+            value: {{ .Values.env.chunk_size }}
           - name: OVERLAP_SIZE
-            value: {{ .Values.rag.configs.overlap_size }}
+            value: {{ .Values.env.overlap_size }}
           - name: RESPONSE_MODE
-            value: {{ .Values.rag.configs.response_mode }}
+            value: {{ .Values.env.response_mode }}
           - name: SSL_VERIFICATION
-            value: {{ .Values.rag.configs.ssl_verification }}
+            value: {{ .Values.env.ssl_verification }}
           ports:
             - containerPort: 8000
           livenessProbe:
