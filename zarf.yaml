@@ -24,8 +24,3 @@ components:
           - "chart/values.yaml"
     images:
       - "ghcr.io/defenseunicorns/leapfrogai/rag:###ZARF_PKG_TMPL_IMAGE_VERSION###"
-  - name: import-model
-    required: true
-    import:
-      name: model
-      url: oci://ghcr.io/defenseunicorns/packages/leapfrogai/leapfrogai-model:0.4.1
