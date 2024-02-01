@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-deployment
+spec:
+  replicas: {{ .Values.rag.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: rag
+  template:
+    metadata:
+      labels:
+        app: rag
+    spec:
+      containers:
+        - name: rag-container
+          image: ghcr.io/defenseunicorns/leapfrogai/rag:{{ .Values.image.lfaiRagTag }}
+          imagePullPolicy: Always
+          env:
+          - name: OPENAI_API_BASE
+            value: {{ .Values.configs.openai_api_base }}
+          - name: OPENAI_API_KEY
+            value: {{ .Values.configs.openai_api_key }}
+          - name: MODEL
+            value: {{ .Values.configs.model }}
+          - name: TEMPERATURE
+            value: {{ .Values.configs.temperature }}
+          - name: CONTEXT_WINDOW
+            value: {{ .Values.configs.context_window }}
+          - name: MAX_OUTPUT
+            value: {{ .Values.configs.max_output }}
+          - name: CHUNK_SIZE
+            value: {{ .Values.configs.chunk_size }}
+          - name: OVERLAP_SIZE
+            value: {{ .Values.configs.overlap_size }}
+          - name: RESPONSE_MODE
+            value: {{ .Values.configs.response_mode }}
+          - name: SSL_VERIFICATION
+            value: {{ .Values.configs.ssl_verification }}
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          securityContext:
+            runAsUser: 65532
+            runAsGroup: 65532
+            fsGroup: 65532
+
+
+
