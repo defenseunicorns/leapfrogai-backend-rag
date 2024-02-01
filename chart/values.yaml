@@ -8,10 +8,10 @@ env:
   openaiApiBase: "https://localhost:8080/openai/v1/"
   openaiApiKey: "my-test-key"
   model: "llamacpp"
-  temperature: "0.2"
-  contextWindow: "8192"
-  maxOutput: "1024"
-  chunkSize: "1024"
-  overlapSize: "20"
+  temperature: 0.2
+  contextWindow: 8192
+  maxOutput: 1024
+  chunkSize: 1024
+  overlapSize: 20
   responseMode: "refine"
-  sslVerification: "False"
+  sslVerification: False
