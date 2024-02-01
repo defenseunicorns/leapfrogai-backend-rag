@@ -1,8 +1,8 @@
 image:
-  lfaiRagTag: 0.0.1
+  lfaiRagTag: "0.0.1"
 
 rag:
-  replicas: 1
+  replicas: "1"
 
 env:
   openaiApiBase: "https://localhost:8080/openai/v1/"
