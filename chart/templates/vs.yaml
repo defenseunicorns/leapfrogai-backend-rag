@@ -11,7 +11,7 @@ spec:
   http:
    - match:
      - uri:
-         prefix: "###ZARF_VAR_PREFIX###/"
+         prefix: {{ .Values.env.prefix }}"/"
      rewrite:
        uri: "/"
      route:
@@ -22,6 +22,6 @@ spec:
   # see https://github.com/istio/istio/issues/8076#issuecomment-427057691 for redirect setup and rationale
    - match:
        - uri:
-           prefix: "###ZARF_VAR_PREFIX###"
+           prefix: {{ .Values.env.prefix }}
      redirect:
-       uri: "###ZARF_VAR_PREFIX###/"
+       uri: {{ .Values.env.prefix }}"/"

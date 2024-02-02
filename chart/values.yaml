@@ -15,4 +15,4 @@ env:
   overlapSize: 20
   responseMode: "refine"
   sslVerification: False
-  prefix: "###ZARF_PKG_TMPL_PREFIX###"
+  prefix: "###ZARF_VAR_PREFIX###"
