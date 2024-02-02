@@ -14,7 +14,7 @@ constants:
 
 variables:
   - name: PREFIX
-    description: Prefix for requests to the application
+    description: Prefix to proxy requests to the application
     default: ""
     prompt: true
     sensitive: false

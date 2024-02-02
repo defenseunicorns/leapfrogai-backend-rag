@@ -18,7 +18,8 @@ load_dotenv(path)
 
 debug = False
 
-app = FastAPI()
+prefix: str = os.environ['PREFIX']
+app = FastAPI(root_path=prefix)
 
 doc_store = DocumentStore()
 
