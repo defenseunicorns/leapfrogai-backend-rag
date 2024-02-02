@@ -12,7 +12,7 @@ env:
   contextWindow: "###ZARF_VAR_CONTEXT_WINDOW###"
   maxOutput: "###ZARF_VAR_MAX_OUTPUT###"
   chunkSize: "###ZARF_VAR_CHUNK_SIZE###"
-  overlapSize: "###ZARF_VAR_OVERLAP_SiZE###"
+  overlapSize: "###ZARF_VAR_OVERLAP_SIZE###"
   responseMode: "###ZARF_VAR_RESPONSE_MODE###"
   sslVerification: "###ZARF_VAR_SSL_VERIFICATION###"
   prefix: "###ZARF_VAR_PREFIX###"
