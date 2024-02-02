@@ -11,9 +11,9 @@ spec:
   http:
    - match:
      - uri:
-         prefix: {{ .Values.env.prefix }}"/"
+         prefix: {{ .Values.env.prefix }}/
      rewrite:
-       uri: "/"
+       uri: /
      route:
      - destination:
         host: rag.leapfrogai.svc.cluster.local
@@ -24,4 +24,4 @@ spec:
        - uri:
            prefix: {{ .Values.env.prefix }}
      redirect:
-       uri: {{ .Values.env.prefix }}"/"
+       uri: {{ .Values.env.prefix }}/
