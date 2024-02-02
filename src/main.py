@@ -104,7 +104,7 @@ def query() -> dict[str, str]:
     return doc_store.get_all_documents()
 
 
-@app.get("/healthz/", status_code=200)
+@app.get("/healthz", status_code=200)
 def healthz() -> HealthResponse:
     return HealthResponse(status="ok")
 
