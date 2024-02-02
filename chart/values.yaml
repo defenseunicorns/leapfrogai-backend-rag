@@ -5,14 +5,14 @@ rag:
   replicas: "1"
 
 env:
-  openaiApiBase: "https://localhost:8080/openai/v1/"
-  openaiApiKey: "my-test-key"
-  model: "llamacpp"
-  temperature: 0.2
-  contextWindow: 8192
-  maxOutput: 1024
-  chunkSize: 1024
-  overlapSize: 20
-  responseMode: "refine"
-  sslVerification: False
+  openaiApiBase: "###ZARF_VAR_API_BASE###"
+  openaiApiKey: "###ZARF_CONST_API_BASE###"
+  model: "###ZARF_VAR_MODEL###"
+  temperature: "###ZARF_VAR_TEMPERATURE###"
+  contextWindow: "###ZARF_VAR_CONTEXT_WINDOW###"
+  maxOutput: "###ZARF_VAR_MAX_OUTPUT###"
+  chunkSize: "###ZARF_VAR_CHUNK_SIZE###"
+  overlapSize: "###ZARF_VAR_OVERLAP_SiZE###"
+  responseMode: "###ZARF_VAR_RESPONSE_MODE###"
+  sslVerification: "###ZARF_VAR_SSL_VERIFICATION###"
   prefix: "###ZARF_VAR_PREFIX###"
