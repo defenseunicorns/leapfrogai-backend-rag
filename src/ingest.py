@@ -5,6 +5,7 @@ from typing import List
 
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import (CSVLoader, Docx2txtLoader,
+                                                  TextLoader,
                                                   UnstructuredFileLoader,
                                                   UnstructuredHTMLLoader,
                                                   UnstructuredMarkdownLoader,
@@ -18,11 +19,14 @@ from langchain_community.document_loaders import PyPDFLoader
 def load_file(file_path) -> List[Document]:
     _, file_extension = os.path.splitext(file_path)
     data: List[Document]
-    if file_extension.lower() == '.html':
-        loader = UnstructuredHTMLLoader(file_path)
+    if file_extension.lower() == '.txt':
+        loader = TextLoader(file_path)
         return loader.load()
     elif file_extension.lower() == '.pdf':
         loader = PyPDFLoader(file_path)
+        return loader.load()
+    elif file_extension.lower() == '.html':
+        loader = UnstructuredHTMLLoader(file_path)
         return loader.load()
     elif file_extension.lower() == '.md':
         loader = UnstructuredMarkdownLoader(file_path)
