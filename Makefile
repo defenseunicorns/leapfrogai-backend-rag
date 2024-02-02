@@ -27,7 +27,7 @@ docker-build:
 	docker build -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH} . --build-arg ARCH=${ARCH}
 
 docker-run:
-	docker run -p 8000:8000 -d ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}
+	docker run -p 8000:8000 -d --env-file .env ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}
 
 docker-push:
 	docker push ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}

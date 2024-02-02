@@ -18,7 +18,8 @@ load_dotenv(path)
 
 debug = False
 
-app = FastAPI()
+prefix: str = os.environ['PREFIX']
+app = FastAPI(root_path=prefix)
 
 doc_store = DocumentStore()
 
@@ -37,11 +38,6 @@ app.add_middleware(
 )
 
 
-class HealthStatus(Enum):
-    READY = 0,
-    NOT_READY = 1
-
-
 class QueryModel(BaseModel):
     input: str = Field(default=None, examples=["List some key points from the documents."])
     collection_name: str = Field(default="default")
@@ -57,7 +53,7 @@ class QueryResponse(BaseModel):
 
 
 class HealthResponse(BaseModel):
-    status: HealthStatus
+    status: str
 
 
 @app.post("/upload/")
@@ -108,9 +104,9 @@ def query() -> dict[str, str]:
     return doc_store.get_all_documents()
 
 
-@app.get("/health/", status_code=200)
-def health() -> HealthResponse:
-    return HealthResponse(status=HealthStatus.READY)
+@app.get("/healthz", status_code=200)
+def healthz() -> HealthResponse:
+    return HealthResponse(status="ok")
 
 
 if __name__ == '__main__':

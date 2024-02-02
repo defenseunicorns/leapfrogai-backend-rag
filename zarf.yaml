@@ -1,18 +1,80 @@
 kind: ZarfPackageConfig
 metadata:
   name: "###ZARF_PKG_TMPL_NAME###"
-  version: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
   description: >
     rag backend + api
 constants:
   - name: IMAGE_VERSION
     value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  - name: PACKAGE_VERSION
+    value: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
   - name: NAME
     value: "###ZARF_PKG_TMPL_NAME###"
+  - name: API_KEY
+    value: "dummy-key"
+
+variables:
+  - name: PREFIX
+    description: Prefix to proxy requests to the application
+    default: "/rag"
+    prompt: true
+    sensitive: false
+  - name: API_BASE
+    description: Base address for the chat API
+    default: "http://api.leapfrogai.svc.cluster.local:8080/openai/v1"
+    prompt: true
+    sensitive: false
+  - name: MODEL
+    description: Model to query when performing refining queries
+    default: "llamacpp"
+    prompt: true
+    sensitive: false
+  - name: TEMPERATURE
+    description: Temperature to use when performing refining queries
+    default: "0.2"
+    prompt: true
+    sensitive: false
+  - name: CONTEXT_WINDOW
+    description: Context window to use when performing refining queries
+    default: "8192"
+    prompt: true
+    sensitive: false
+  - name: MAX_OUTPUT
+    description: Max output to use when performing refining queries
+    default: "1024"
+    prompt: true
+    sensitive: false
+  - name: CHUNK_SIZE
+    description: Chunk size to use when chunking uploaded docs
+    default: "1024"
+    prompt: true
+    sensitive: false
+  - name: OVERLAP_SIZE
+    description: Overlap size to use when chunking uploaded docs
+    default: "20"
+    prompt: true
+    sensitive: false
+  - name: RESPONSE_MODE
+    description: Response mode to use when querying the vector store
+    default: "refine"
+    prompt: true
+    sensitive: false
+  - name: SSL_VERIFICATION
+    description: Should SSL connections be verified when performing refining queries
+    default: "False"
+    prompt: true
+    sensitive: false
 
 components:
-  - name: import-model
-    required: true
-    import:
-      name: model
-      url: oci://ghcr.io/defenseunicorns/packages/leapfrogai/leapfrogai-model:0.4.1
+  - name: rag
+    require: true
+    charts:
+      - name: rag
+        namespace: leapfrogai
+        localPath: chart
+        version: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+        valuesFiles:
+          - "chart/values.yaml"
+    images:
+      - "ghcr.io/defenseunicorns/leapfrogai/rag:###ZARF_PKG_TMPL_IMAGE_VERSION###"
