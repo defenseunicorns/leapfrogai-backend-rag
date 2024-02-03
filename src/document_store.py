@@ -15,8 +15,14 @@ from llama_index.core.base_query_engine import BaseQueryEngine
 from llama_index.llms import OpenAILike, LLM
 from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores import ChromaVectorStore
+from pydantic import BaseModel
 
 from ingest import Ingest
+
+
+class UniqueDocument(BaseModel):
+    uuid: str
+    source: str
 
 
 class DocumentStore:
@@ -59,12 +65,12 @@ class DocumentStore:
             [], storage_context=storage_context, service_context=service_context
         )
 
-    def get_all_documents(self) -> dict[str, str]:
+    def get_all_documents(self) -> list[UniqueDocument]:
         all_documents: GetResult = self.collection.get(include=['metadatas'])
         all_metadatas: list[Mapping] = all_documents['metadatas']
-        unique_documents: dict[str, str] = {}
+        unique_documents: list[UniqueDocument] = []
         for metadata in all_metadatas:
-            unique_documents[metadata['uuid']] = metadata['source']
+            unique_documents.append(UniqueDocument(uuid=metadata['uuid'], source=metadata['source']))
         return unique_documents
 
     def delete_documents(self, uuids: List[str]):
