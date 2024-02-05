@@ -67,7 +67,7 @@ deprecated==1.2.14
     #   opentelemetry-exporter-otlp-proto-grpc
 distro==1.9.0
     # via openai
-fastapi==0.109.0
+fastapi==0.109.1
     # via chromadb
 filelock==3.13.1
     # via

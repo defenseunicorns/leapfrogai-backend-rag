@@ -69,7 +69,7 @@ dirtyjson==1.0.8
     # via llama-index
 distro==1.9.0
     # via openai
-fastapi==0.109.0
+fastapi==0.109.1
     # via chromadb
 filelock==3.13.1
     # via
