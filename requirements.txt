@@ -357,7 +357,7 @@ sqlalchemy[asyncio]==2.0.25
     #   langchain
     #   langchain-community
     #   llama-index
-starlette==0.35.1
+starlette==0.36.2
     # via fastapi
 sympy==1.12
     # via
