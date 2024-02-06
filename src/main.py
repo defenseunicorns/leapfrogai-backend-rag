@@ -10,8 +10,7 @@ from fastapi import FastAPI, UploadFile, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from document_store import DocumentStore
-from document_store import UniqueDocument
+from document_store import DocumentStore, UniqueDocument
 
 path = os.getcwd()
 path = os.path.join(path, ".env")
