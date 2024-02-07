@@ -45,9 +45,10 @@ def load_file(file_path) -> List[Document]:
         return UnstructuredFileLoader(file_path).load()
 
 
-def update_metadata(file_name: str, doc_uuid: str, metadata: dict) -> dict:
+def update_metadata(file_name: str, doc_uuid: str, idx: int, metadata: dict) -> dict:
     metadata['source'] = file_name
     metadata['uuid'] = doc_uuid
+    metadata['chunk_idx'] = idx
     return metadata
 
 
@@ -70,7 +71,8 @@ class Ingest:
             texts: list[Document] = text_splitter.split_documents(data)
             contents: list[str] = [d.page_content for d in texts]
             doc_uuid: str = str(uuid.uuid4())
-            all_metadata: list[dict] = [update_metadata(file_name, doc_uuid, d.metadata) for d in texts]
+            all_metadata: list[dict] = [update_metadata(file_name, doc_uuid, idx, d.metadata)
+                                        for idx, d in enumerate(texts)]
             ids: list[str] = get_uuids_for_document_texts(texts)
             self.collection.add(documents=contents, metadatas=all_metadata, ids=ids)
             # split and load into vector db

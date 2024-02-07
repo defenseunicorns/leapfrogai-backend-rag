@@ -66,7 +66,7 @@ class DocumentStore:
         )
 
     def get_all_documents(self) -> list[UniqueDocument]:
-        all_documents: GetResult = self.collection.get(include=['metadatas'])
+        all_documents: GetResult = self.collection.get(include=['metadatas'], where={"chunk_idx": 0})
         all_metadatas: list[Mapping] = all_documents['metadatas']
         unique_documents: list[UniqueDocument] = []
         for metadata in all_metadatas:
