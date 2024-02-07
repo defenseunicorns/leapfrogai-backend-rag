@@ -69,8 +69,11 @@ class DocumentStore:
         all_documents: GetResult = self.collection.get(include=['metadatas'])
         all_metadatas: list[Mapping] = all_documents['metadatas']
         unique_documents: list[UniqueDocument] = []
+        inserted_ids: list = []
         for metadata in all_metadatas:
-            unique_documents.append(UniqueDocument(uuid=metadata['uuid'], source=metadata['source']))
+            if inserted_ids.count(metadata['uuid']) == 0:
+                unique_documents.append(UniqueDocument(uuid=metadata['uuid'], source=metadata['source']))
+                inserted_ids.append(metadata['uuid'])
         return unique_documents
 
     def delete_documents(self, uuids: List[str]):
