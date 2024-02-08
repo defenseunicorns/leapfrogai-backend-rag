@@ -1,8 +1,7 @@
-from enum import Enum
+import logging
 import os
 import sys
 from typing import List
-import logging
 
 import uvicorn
 from dotenv import load_dotenv

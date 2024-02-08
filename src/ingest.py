@@ -2,6 +2,7 @@ import os
 import tempfile
 import uuid
 from typing import List
+from chromadb.api.models import Collection
 
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import (CSVLoader, Docx2txtLoader,
@@ -57,7 +58,7 @@ def get_uuids_for_document_texts(texts: list[Document]) -> list[str]:
 
 
 class Ingest:
-    def __init__(self, collection, chunk_size: int, chunk_overlap: int):
+    def __init__(self, collection: Collection, chunk_size: int, chunk_overlap: int):
         self.collection = collection
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
