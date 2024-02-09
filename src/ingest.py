@@ -10,9 +10,11 @@ from langchain_community.document_loaders import (CSVLoader, Docx2txtLoader,
                                                   UnstructuredFileLoader,
                                                   UnstructuredHTMLLoader,
                                                   UnstructuredMarkdownLoader,
-                                                  UnstructuredPowerPointLoader)
+                                                  UnstructuredPowerPointLoader,
+                                                  UnstructuredExcelLoader)
 from langchain.text_splitter import TokenTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
+from transformers import GPT2TokenizerFast
 
 
 # Chroma
@@ -41,6 +43,9 @@ def load_file(file_path) -> List[Document]:
     elif file_extension.lower() == '.docx':
         loader = Docx2txtLoader(file_path)
         return loader.load()
+    elif file_extension.lower() == '.xls' or file_extension.lower() == '.xlsx':
+        loader = UnstructuredExcelLoader(file_path, mode="elements")
+        return loader.load()
     else:
         # Perform action for other files or skip
         return UnstructuredFileLoader(file_path).load()
@@ -64,9 +69,12 @@ class Ingest:
         self.chunk_overlap = chunk_overlap
 
     def process_file(self, file_name: str, file_path: str) -> None:
+        tokenizer = GPT2TokenizerFast.from_pretrained(pretrained_model_name_or_path="gpt2", cache_dir="tokenizer-cache")
         # disallowed_special is set so that technical documents that contain special tokens can be loaded
-        text_splitter = TokenTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap,
-                                          disallowed_special=())
+        text_splitter = TokenTextSplitter.from_huggingface_tokenizer(
+            tokenizer, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap,
+            disallowed_special=()
+        )
         try:
             data: list[Document] = load_file(file_path=file_path)
             texts: list[Document] = text_splitter.split_documents(data)

@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements.txt pyproject.toml
 #
-aiohttp==3.9.2
+aiohttp==3.9.3
     # via
     #   langchain
     #   langchain-community
@@ -65,6 +65,8 @@ deprecated==1.2.14
     #   llama-index
     #   opentelemetry-api
     #   opentelemetry-exporter-otlp-proto-grpc
+dirtyjson==1.0.8
+    # via llama-index
 distro==1.9.0
     # via openai
 fastapi==0.109.0
@@ -144,16 +146,16 @@ langchain-community==0.0.16
     # via
     #   langchain
     #   leapfrogai-backend-rag (pyproject.toml)
-langchain-core==0.1.16
+langchain-core==0.1.22
     # via
     #   langchain
     #   langchain-community
-langsmith==0.0.84
+langsmith==0.0.87
     # via
     #   langchain
     #   langchain-community
     #   langchain-core
-llama-index==0.9.39
+llama-index==0.9.40
     # via leapfrogai-backend-rag (pyproject.toml)
 markupsafe==2.1.4
     # via jinja2
@@ -418,7 +420,7 @@ urllib3==2.1.0
     # via
     #   kubernetes
     #   requests
-uvicorn[standard]==0.27.0.post1
+uvicorn[standard]==0.27.0
     # via
     #   chromadb
     #   leapfrogai-backend-rag (pyproject.toml)
