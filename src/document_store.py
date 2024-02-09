@@ -30,7 +30,7 @@ class DocumentStore:
     def __init__(self):
         self.client: ClientAPI = chromadb.PersistentClient(path="db", settings=Settings(anonymized_telemetry=False))
         self.default_collection_name: str = "default"
-        self.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "WhereIsAI/UAE-Large-V1"
+        self.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "hkunlp/instructor-xl"
         self.cache_folder = "embedding-cache"
         self.embeddings: Embeddings = SentenceTransformerEmbeddings(
             model_name=self.embeddings_model_name,

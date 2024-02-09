@@ -69,12 +69,10 @@ class Ingest:
         self.chunk_overlap = chunk_overlap
 
     def process_file(self, file_name: str, file_path: str) -> None:
-        tokenizer = GPT2TokenizerFast.from_pretrained(pretrained_model_name_or_path="gpt2", cache_dir="tokenizer-cache")
+        os.environ["TIKTOKEN_CACHE_DIR"] = "tokenizer-cache"
         # disallowed_special is set so that technical documents that contain special tokens can be loaded
-        text_splitter = TokenTextSplitter.from_huggingface_tokenizer(
-            tokenizer, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap,
-            disallowed_special=()
-        )
+        text_splitter = TokenTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap,
+                                          disallowed_special=())
         try:
             data: list[Document] = load_file(file_path=file_path)
             texts: list[Document] = text_splitter.split_documents(data)

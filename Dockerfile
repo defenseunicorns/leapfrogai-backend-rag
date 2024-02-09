@@ -10,7 +10,7 @@ RUN source .venv/bin/activate
 COPY requirements.txt .
 RUN pip install -r requirements.txt --user
 
-ENV EMBEDDING_MODEL_NAME=WhereIsAI/UAE-Large-V1
+ENV EMBEDDING_MODEL_NAME=hkunlp/instructor-xl
 COPY tools/cache_embeddings.py .
 RUN python cache_embeddings.py
 

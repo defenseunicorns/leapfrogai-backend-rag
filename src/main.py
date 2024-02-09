@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import threading
 from typing import List
 
 import uvicorn
@@ -60,8 +61,9 @@ async def upload(file: UploadFile) -> UploadResponse:
     try:
         logging.debug("Received file: " + file.filename)
         contents: bytes = await file.read()
-        doc_store.load_file_bytes(contents, file.filename)
-        logging.debug("File loaded")
+        thread = threading.Thread(target=doc_store.load_file_bytes, args=(contents, file.filename))
+        thread.start()
+        logging.debug("File load started")
     except HTTPException as e:
         raise HTTPException(
             status_code=e.status_code,

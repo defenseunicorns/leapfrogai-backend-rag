@@ -5,7 +5,7 @@ from langchain_core.embeddings import Embeddings as HFEmbeddings
 class PassThroughEmbeddingsFunction(EmbeddingFunction[Documents]):
     def __init__(
             self,
-            model_name: str = "WhereIsAI/UAE-Large-V1",
+            model_name: str = "hkunlp/instructor-xl",
             cache_folder: str = "",
             embeddings: HFEmbeddings = None
     ):

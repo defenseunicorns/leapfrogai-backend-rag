@@ -29,8 +29,11 @@ backoff==2.2.1
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-grpc
     #   posthog
+    #   unstructured
 bcrypt==4.1.2
     # via chromadb
+beautifulsoup4==4.12.3
+    # via unstructured
 build==1.0.3
     # via chromadb
 cachetools==5.3.2
@@ -42,8 +45,13 @@ certifi==2023.11.17
     #   kubernetes
     #   pulsar-client
     #   requests
+    #   unstructured-client
+chardet==5.2.0
+    # via unstructured
 charset-normalizer==3.3.2
-    # via requests
+    # via
+    #   requests
+    #   unstructured-client
 chroma-hnswlib==0.7.3
     # via chromadb
 chromadb==0.4.22
@@ -60,6 +68,9 @@ dataclasses-json==0.6.3
     #   langchain
     #   langchain-community
     #   llama-index
+    #   unstructured
+dataclasses-json-speakeasy==0.5.11
+    # via unstructured-client
 deprecated==1.2.14
     # via
     #   llama-index
@@ -69,6 +80,10 @@ dirtyjson==1.0.8
     # via llama-index
 distro==1.9.0
     # via openai
+emoji==2.10.1
+    # via unstructured
+et-xmlfile==1.1.0
+    # via openpyxl
 fastapi==0.109.0
     # via chromadb
 filelock==3.13.1
@@ -76,6 +91,8 @@ filelock==3.13.1
     #   huggingface-hub
     #   torch
     #   transformers
+filetype==1.2.0
+    # via unstructured
 flatbuffers==23.5.26
     # via onnxruntime
 frozenlist==1.4.1
@@ -121,6 +138,7 @@ idna==3.6
     #   anyio
     #   httpx
     #   requests
+    #   unstructured-client
     #   yarl
 importlib-metadata==6.11.0
     # via opentelemetry-api
@@ -136,6 +154,8 @@ jsonpatch==1.33
     # via
     #   langchain
     #   langchain-core
+jsonpath-python==1.0.6
+    # via unstructured-client
 jsonpointer==2.4
     # via jsonpatch
 kubernetes==29.0.0
@@ -150,6 +170,8 @@ langchain-core==0.1.22
     # via
     #   langchain
     #   langchain-community
+langdetect==1.0.9
+    # via unstructured
 langsmith==0.0.87
     # via
     #   langchain
@@ -157,10 +179,15 @@ langsmith==0.0.87
     #   langchain-core
 llama-index==0.9.40
     # via leapfrogai-backend-rag (pyproject.toml)
+lxml==5.1.0
+    # via unstructured
 markupsafe==2.1.4
     # via jinja2
 marshmallow==3.20.2
-    # via dataclasses-json
+    # via
+    #   dataclasses-json
+    #   dataclasses-json-speakeasy
+    #   unstructured-client
 mmh3==4.1.0
     # via chromadb
 monotonic==1.6
@@ -172,7 +199,9 @@ multidict==6.0.4
     #   aiohttp
     #   yarl
 mypy-extensions==1.0.0
-    # via typing-inspect
+    # via
+    #   typing-inspect
+    #   unstructured-client
 nest-asyncio==1.6.0
     # via llama-index
 networkx==3.2.1
@@ -183,6 +212,7 @@ nltk==3.8.1
     # via
     #   llama-index
     #   sentence-transformers
+    #   unstructured
 numpy==1.26.3
     # via
     #   chroma-hnswlib
@@ -196,6 +226,7 @@ numpy==1.26.3
     #   scipy
     #   sentence-transformers
     #   transformers
+    #   unstructured
 oauthlib==3.2.2
     # via
     #   kubernetes
@@ -204,6 +235,8 @@ onnxruntime==1.16.3
     # via chromadb
 openai==1.10.0
     # via llama-index
+openpyxl==3.1.2
+    # via leapfrogai-backend-rag (pyproject.toml)
 opentelemetry-api==1.22.0
     # via
     #   chromadb
@@ -251,6 +284,7 @@ packaging==23.2
     #   marshmallow
     #   onnxruntime
     #   transformers
+    #   unstructured-client
 pandas==2.2.0
     # via llama-index
 pillow==10.2.0
@@ -291,10 +325,15 @@ python-dateutil==2.8.2
     #   kubernetes
     #   pandas
     #   posthog
+    #   unstructured-client
 python-dotenv==1.0.1
     # via
     #   leapfrogai-backend-rag (pyproject.toml)
     #   uvicorn
+python-iso639==2024.2.7
+    # via unstructured
+python-magic==0.4.27
+    # via unstructured
 python-multipart==0.0.6
     # via leapfrogai-backend-rag (pyproject.toml)
 pytz==2023.4
@@ -309,6 +348,8 @@ pyyaml==6.0.1
     #   langchain-core
     #   transformers
     #   uvicorn
+rapidfuzz==3.6.1
+    # via unstructured
 regex==2023.12.25
     # via
     #   nltk
@@ -328,6 +369,8 @@ requests==2.31.0
     #   requests-oauthlib
     #   tiktoken
     #   transformers
+    #   unstructured
+    #   unstructured-client
 requests-oauthlib==1.3.1
     # via kubernetes
 rsa==4.9
@@ -347,13 +390,17 @@ sentencepiece==0.1.99
 six==1.16.0
     # via
     #   kubernetes
+    #   langdetect
     #   posthog
     #   python-dateutil
+    #   unstructured-client
 sniffio==1.3.0
     # via
     #   anyio
     #   httpx
     #   openai
+soupsieve==2.5
+    # via beautifulsoup4
 sqlalchemy[asyncio]==2.0.25
     # via
     #   langchain
@@ -365,6 +412,8 @@ sympy==1.12
     # via
     #   onnxruntime
     #   torch
+tabulate==0.9.0
+    # via unstructured
 tenacity==8.2.3
     # via
     #   chromadb
@@ -410,16 +459,25 @@ typing-extensions==4.9.0
     #   torch
     #   typer
     #   typing-inspect
+    #   unstructured
+    #   unstructured-client
 typing-inspect==0.9.0
     # via
     #   dataclasses-json
+    #   dataclasses-json-speakeasy
     #   llama-index
+    #   unstructured-client
 tzdata==2023.4
     # via pandas
+unstructured==0.12.4
+    # via leapfrogai-backend-rag (pyproject.toml)
+unstructured-client==0.18.0
+    # via unstructured
 urllib3==2.1.0
     # via
     #   kubernetes
     #   requests
+    #   unstructured-client
 uvicorn[standard]==0.27.0
     # via
     #   chromadb
@@ -436,6 +494,7 @@ wrapt==1.16.0
     # via
     #   deprecated
     #   opentelemetry-instrumentation
+    #   unstructured
 yarl==1.9.4
     # via aiohttp
 zipp==3.17.0
