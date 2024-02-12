@@ -293,7 +293,7 @@ python-dotenv==1.0.1
     # via
     #   leapfrogai-backend-rag (pyproject.toml)
     #   uvicorn
-python-multipart==0.0.6
+python-multipart==0.0.7
     # via leapfrogai-backend-rag (pyproject.toml)
 pytz==2023.4
     # via pandas
