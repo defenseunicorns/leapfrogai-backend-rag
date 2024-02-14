@@ -8,3 +8,4 @@ files/
 .env
 embedding-cache/
 tokenizer-cache/
+.vscode/
