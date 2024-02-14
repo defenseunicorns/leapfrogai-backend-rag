@@ -2,9 +2,10 @@ import os
 import tempfile
 import uuid
 from typing import List
-from chromadb.api.models import Collection
 
+from chromadb.api.models import Collection
 from langchain.docstore.document import Document
+from langchain.text_splitter import TokenTextSplitter
 from langchain_community.document_loaders import (CSVLoader, Docx2txtLoader,
                                                   TextLoader,
                                                   UnstructuredFileLoader,
@@ -12,9 +13,7 @@ from langchain_community.document_loaders import (CSVLoader, Docx2txtLoader,
                                                   UnstructuredMarkdownLoader,
                                                   UnstructuredPowerPointLoader,
                                                   UnstructuredExcelLoader)
-from langchain.text_splitter import TokenTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
-from transformers import GPT2TokenizerFast
 
 
 # Chroma
