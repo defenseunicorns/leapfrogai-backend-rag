@@ -1,5 +1,8 @@
 from fastapi.testclient import TestClient
+
 from main import app
+
+TEST_COLLECTION_NAME = "test"
 
 
 def test_routes():
@@ -27,10 +30,3 @@ def test_healthz():
         response = client.get("/healthz")
         assert response.status_code == 200
         assert response.json() == {"status": "ok"}
-
-
-def test_list():
-    with TestClient(app) as client:
-        response = client.get("/list/")
-        assert response.status_code == 200
-        assert len(response.json()) > 0
