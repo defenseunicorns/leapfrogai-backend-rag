@@ -15,7 +15,7 @@ build-requirements:
 	pip-compile -o requirements.txt pyproject.toml
 
 build-requirements-dev:
-	pip-compile --extra dev -o requirements-dev.txt pyproject.toml
+	pip-compile --extra dev -o requirements-dev.txt pyproject.toml --allow-unsafe
 
 requirements-dev:
 	python -m pip install -r requirements-dev.txt
@@ -27,7 +27,10 @@ docker-build:
 	docker build -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH} . --build-arg ARCH=${ARCH}
 
 docker-run:
-	docker run -p 8000:8000 -d --env-file .env ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}
+	docker run -p 8000:8000 -v ~/.db/:/leapfrogai/db/ -d --env-file .env ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}
 
 docker-push:
 	docker push ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}
+
+test:
+	pytest tests/test_main.py

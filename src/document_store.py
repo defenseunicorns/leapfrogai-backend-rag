@@ -4,7 +4,7 @@ from typing import List, Mapping
 
 import chromadb
 import httpx
-from chromadb import ClientAPI, GetResult
+from chromadb import ClientAPI, GetResult, Settings
 from chromadb.api.models import Collection
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
@@ -17,6 +17,7 @@ from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores import ChromaVectorStore
 from pydantic import BaseModel
 
+from embedding_functions import PassThroughEmbeddingsFunction
 from ingest import Ingest
 
 
@@ -27,9 +28,22 @@ class UniqueDocument(BaseModel):
 
 class DocumentStore:
     def __init__(self):
-        self.client: ClientAPI = chromadb.PersistentClient(path="db")
+        self.client: ClientAPI = chromadb.PersistentClient(path="db", settings=Settings(anonymized_telemetry=False))
         self.default_collection_name: str = "default"
-        self.collection: Collection = self.client.get_or_create_collection(name=self.default_collection_name)
+        self.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "hkunlp/instructor-xl"
+        self.cache_folder = "embedding-cache"
+        self.embeddings: Embeddings = SentenceTransformerEmbeddings(
+            model_name=self.embeddings_model_name,
+            model_kwargs={'device': 'cpu'},
+            cache_folder=self.cache_folder
+        )
+        self.embeddings_function = PassThroughEmbeddingsFunction(
+            model_name=self.embeddings_model_name,
+            cache_folder=self.cache_folder,
+            embeddings=self.embeddings
+        )
+        self.collection: Collection = self.client.get_or_create_collection(name=self.default_collection_name,
+                                                                           embedding_function=self.embeddings_function)
         self.chunk_size: int = int(os.environ.get('CHUNK_SIZE'))
         self.overlap_size: int = int(os.environ.get('OVERLAP_SIZE'))
         self.response_mode: str = os.environ.get('RESPONSE_MODE')
@@ -38,9 +52,7 @@ class DocumentStore:
         self.temperature: float = float(os.environ.get('TEMPERATURE'))
         self.model: str = os.environ.get('MODEL')
         self.ingestor: Ingest = Ingest(self.collection, self.chunk_size, self.overlap_size)
-
-        self.embedding_function: Embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
-        self.chroma_db: Chroma = Chroma(embedding_function=self.embedding_function,
+        self.chroma_db: Chroma = Chroma(embedding_function=self.embeddings,
                                         collection_name=self.default_collection_name,
                                         client=self.client)
 
@@ -55,7 +67,7 @@ class DocumentStore:
                                    http_client=http_client)
         vector_store: ChromaVectorStore = ChromaVectorStore(chroma_collection=self.collection)
         storage_context: StorageContext = StorageContext.from_defaults(vector_store=vector_store)
-        service_context: ServiceContext = ServiceContext.from_defaults(embed_model=self.embedding_function,
+        service_context: ServiceContext = ServiceContext.from_defaults(embed_model=self.embeddings,
                                                                        llm=self.llm,
                                                                        context_window=self.context_window,
                                                                        num_output=self.max_output,

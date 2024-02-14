@@ -3,14 +3,16 @@ import tempfile
 import uuid
 from typing import List
 
+from chromadb.api.models import Collection
 from langchain.docstore.document import Document
+from langchain.text_splitter import TokenTextSplitter
 from langchain_community.document_loaders import (CSVLoader, Docx2txtLoader,
                                                   TextLoader,
                                                   UnstructuredFileLoader,
                                                   UnstructuredHTMLLoader,
                                                   UnstructuredMarkdownLoader,
-                                                  UnstructuredPowerPointLoader)
-from langchain.text_splitter import TokenTextSplitter
+                                                  UnstructuredPowerPointLoader,
+                                                  UnstructuredExcelLoader)
 from langchain_community.document_loaders import PyPDFLoader
 
 
@@ -40,6 +42,9 @@ def load_file(file_path) -> List[Document]:
     elif file_extension.lower() == '.docx':
         loader = Docx2txtLoader(file_path)
         return loader.load()
+    elif file_extension.lower() == '.xls' or file_extension.lower() == '.xlsx':
+        loader = UnstructuredExcelLoader(file_path, mode="elements")
+        return loader.load()
     else:
         # Perform action for other files or skip
         return UnstructuredFileLoader(file_path).load()
@@ -57,12 +62,13 @@ def get_uuids_for_document_texts(texts: list[Document]) -> list[str]:
 
 
 class Ingest:
-    def __init__(self, collection, chunk_size: int, chunk_overlap: int):
+    def __init__(self, collection: Collection, chunk_size: int, chunk_overlap: int):
         self.collection = collection
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
 
     def process_file(self, file_name: str, file_path: str) -> None:
+        os.environ["TIKTOKEN_CACHE_DIR"] = "tokenizer-cache"
         # disallowed_special is set so that technical documents that contain special tokens can be loaded
         text_splitter = TokenTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap,
                                           disallowed_special=())
