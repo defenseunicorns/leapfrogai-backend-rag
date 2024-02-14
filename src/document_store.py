@@ -27,9 +27,8 @@ class UniqueDocument(BaseModel):
 
 
 class DocumentStore:
-    def __init__(self):
+    def __init__(self, default_collection_name="default"):
         self.client: ClientAPI = chromadb.PersistentClient(path="db", settings=Settings(anonymized_telemetry=False))
-        self.default_collection_name: str = "default"
         self.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "hkunlp/instructor-xl"
         self.cache_folder = "embedding-cache"
         self.embeddings: Embeddings = SentenceTransformerEmbeddings(
@@ -42,8 +41,7 @@ class DocumentStore:
             cache_folder=self.cache_folder,
             embeddings=self.embeddings
         )
-        self.collection: Collection = self.client.get_or_create_collection(name=self.default_collection_name,
-                                                                           embedding_function=self.embeddings_function)
+        self.create_collection(default_collection_name)
         self.chunk_size: int = int(os.environ.get('CHUNK_SIZE'))
         self.overlap_size: int = int(os.environ.get('OVERLAP_SIZE'))
         self.response_mode: str = os.environ.get('RESPONSE_MODE')
@@ -53,7 +51,7 @@ class DocumentStore:
         self.model: str = os.environ.get('MODEL')
         self.ingestor: Ingest = Ingest(self.collection, self.chunk_size, self.overlap_size)
         self.chroma_db: Chroma = Chroma(embedding_function=self.embeddings,
-                                        collection_name=self.default_collection_name,
+                                        collection_name=default_collection_name,
                                         client=self.client)
 
         # LlamaIndex
@@ -77,13 +75,20 @@ class DocumentStore:
             [], storage_context=storage_context, service_context=service_context
         )
 
+    def create_collection(self, collection_name):
+        self.collection: Collection = self.client.get_or_create_collection(name=collection_name,
+                                                                           embedding_function=self.embeddings_function)
+
     def get_all_documents(self) -> list[UniqueDocument]:
-        all_documents: GetResult = self.collection.get(include=['metadatas'], where={"chunk_idx": 0})
-        all_metadatas: list[Mapping] = all_documents['metadatas']
-        unique_documents: list[UniqueDocument] = []
-        for metadata in all_metadatas:
-            unique_documents.append(UniqueDocument(uuid=metadata['uuid'], source=metadata['source']))
-        return unique_documents
+        if self.collection.count() > 0:
+            all_documents: GetResult = self.collection.get(include=['metadatas'], where={"chunk_idx": 0})
+            all_metadatas: list[Mapping] = all_documents['metadatas']
+            unique_documents: list[UniqueDocument] = []
+            for metadata in all_metadatas:
+                unique_documents.append(UniqueDocument(uuid=metadata['uuid'], source=metadata['source']))
+            return unique_documents
+        else:
+            return []
 
     def delete_documents(self, uuids: List[str]):
         for uuid in uuids:
