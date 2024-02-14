@@ -31,3 +31,6 @@ docker-run:
 
 docker-push:
 	docker push ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}
+
+test:
+	pytest tests/test_main.py
