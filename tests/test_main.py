@@ -97,6 +97,7 @@ def test_upload(collection):
 
             test_collection = main.doc_store.collection
             while test_collection.count() == 0:
+                print(test_collection.count())
                 sleep(1)
 
             response = client.get("/list/")
