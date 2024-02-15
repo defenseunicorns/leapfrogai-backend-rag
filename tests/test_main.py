@@ -112,9 +112,9 @@ def test_query_raw(collection):
 
             test_collection = main.doc_store.collection
             while test_collection.count() == 0:
-                print("inside" + test_collection.count())
+                print("inside" + str(test_collection.count()))
                 sleep(1)
-            print("outside" + test_collection.count())
+            print("outside" + str(test_collection.count()))
 
             response = client.post("/query/raw", json={"input": "some input value",
                                                        "collection_name": TEST_COLLECTION_NAME})
