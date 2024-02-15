@@ -11,6 +11,6 @@ jobs:
         with:
           python-version-file: 'pyproject.toml'
 
+      - run: cp .env.example .env
       - run: make requirements-dev
-
       - run: make test
