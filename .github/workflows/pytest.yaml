@@ -1,0 +1,16 @@
+name: pytest
+on: [pull_request]
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: 'pyproject.toml'
+
+      - run: make requirements-dev
+
+      - run: make test
