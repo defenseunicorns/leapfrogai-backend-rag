@@ -41,7 +41,8 @@ class DocumentStore:
             cache_folder=self.cache_folder,
             embeddings=self.embeddings
         )
-        self.create_collection(default_collection_name)
+        self.collection = self.client.get_or_create_collection(name=default_collection_name,
+                                                               embedding_function=self.embeddings_function)
         self.chunk_size: int = int(os.environ.get('CHUNK_SIZE'))
         self.overlap_size: int = int(os.environ.get('OVERLAP_SIZE'))
         self.response_mode: str = os.environ.get('RESPONSE_MODE')
@@ -74,10 +75,6 @@ class DocumentStore:
         self.index: VectorStoreIndex = VectorStoreIndex.from_documents(
             [], storage_context=storage_context, service_context=service_context
         )
-
-    def create_collection(self, collection_name):
-        self.collection: Collection = self.client.get_or_create_collection(name=collection_name,
-                                                                           embedding_function=self.embeddings_function)
 
     def get_all_documents(self) -> list[UniqueDocument]:
         if self.collection.count() > 0:
