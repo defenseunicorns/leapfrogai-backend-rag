@@ -102,3 +102,20 @@ def test_upload(collection):
             response = client.get("/list/")
             assert response.status_code == 200
             assert len(response.json()) == 1
+
+
+def test_query_raw(collection):
+    with open("tests/resources/lorem-ipsum.pdf", "rb") as f:
+        _files = {'file': f}
+        with TestClient(app) as client:
+            client.post("/upload/", files=_files)
+
+            test_collection = main.doc_store.collection
+            while test_collection.count() == 0:
+                sleep(1)
+
+            response = client.post("/query/raw", json={"input": "some input value",
+                                                       "collection_name": TEST_COLLECTION_NAME})
+            assert response.status_code == 200
+            query_response: main.QueryResponse = response.json()
+            assert "\xa0Lorem\xa0ipsum\xa0dolor" in query_response['results']
