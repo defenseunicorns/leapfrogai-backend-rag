@@ -112,11 +112,9 @@ def test_query_raw(collection):
 
             test_collection = main.doc_store.collection
             while test_collection.count() == 0:
-                print("inside" + str(test_collection.count()))
                 sleep(1)
-            print("outside" + str(test_collection.count()))
 
-            response = client.post("/query/raw", json={"input": "some input value",
+            response = client.post("/query/raw", json={"input": "lorem ipsum dolor",
                                                        "collection_name": TEST_COLLECTION_NAME})
             assert response.status_code == 200
             query_response: main.QueryResponse = response.json()
