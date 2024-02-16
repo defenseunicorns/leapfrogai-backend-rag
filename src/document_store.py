@@ -28,6 +28,7 @@ class UniqueDocument(BaseModel):
 
 class DocumentStore:
     def __init__(self, default_collection_name="default"):
+        self.default_collection_name = default_collection_name
         self.client: ClientAPI = chromadb.PersistentClient(path="db", settings=Settings(anonymized_telemetry=False))
         self.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "hkunlp/instructor-xl"
         self.cache_folder = "embedding-cache"
@@ -64,17 +65,32 @@ class DocumentStore:
                                    max_tokens=self.context_window,
                                    api_base=api_base, api_key=api_key,
                                    http_client=http_client)
-        vector_store: ChromaVectorStore = ChromaVectorStore(chroma_collection=self.collection)
-        storage_context: StorageContext = StorageContext.from_defaults(vector_store=vector_store)
-        service_context: ServiceContext = ServiceContext.from_defaults(embed_model=self.embeddings,
-                                                                       llm=self.llm,
-                                                                       context_window=self.context_window,
-                                                                       num_output=self.max_output,
-                                                                       chunk_size=self.chunk_size,
-                                                                       chunk_overlap=self.overlap_size)
-        self.index: VectorStoreIndex = VectorStoreIndex.from_documents(
-            [], storage_context=storage_context, service_context=service_context
-        )
+        self.service_context: ServiceContext = ServiceContext.from_defaults(embed_model=self.embeddings,
+                                                                            llm=self.llm,
+                                                                            context_window=self.context_window,
+                                                                            num_output=self.max_output,
+                                                                            chunk_size=self.chunk_size,
+                                                                            chunk_overlap=self.overlap_size)
+        self.index_dictionary: dict = {}
+        self.index: VectorStoreIndex = self.construct_index_for_collection(self.default_collection_name)
+
+    def construct_index_for_collection(self, collection_name: str):
+        collection_entry: Collection = self.index_dictionary.get(collection_name)
+
+        if collection_entry is not None:
+            return collection_entry
+        else:
+            collection = self.client.get_or_create_collection(name=collection_name,
+                                                              embedding_function=self.embeddings_function)
+
+            vector_store: ChromaVectorStore = ChromaVectorStore(chroma_collection=collection)
+            storage_context: StorageContext = StorageContext.from_defaults(vector_store=vector_store)
+
+            self.index_dictionary[collection_name] = VectorStoreIndex.from_documents(
+                [], storage_context=storage_context, service_context=self.service_context
+            )
+
+            return self.index_dictionary[collection_name]
 
     def get_all_documents(self) -> list[UniqueDocument]:
         if self.collection.count() > 0:
@@ -102,11 +118,17 @@ class DocumentStore:
 
         return False
 
-    def query_llamaindex(self, query_text: str, response_mode: str = None) -> str | None:
+    def query_llamaindex(self, query_text: str, response_mode: str = None,
+                         collection_name: str = "default") -> str | None:
         if response_mode is None:
             response_mode = self.response_mode
 
-        query_engine: BaseQueryEngine = self.index.as_query_engine(response_mode=response_mode)
+        if collection_name is None or collection_name is self.default_collection_name or collection_name.strip() == "":
+            collection_index = self.index
+        else:
+            collection_index = self.construct_index_for_collection(collection_name)
+
+        query_engine: BaseQueryEngine = collection_index.as_query_engine(response_mode=response_mode)
         query_result: Response = query_engine.query(query_text)
 
         if response_mode == "no_text":
