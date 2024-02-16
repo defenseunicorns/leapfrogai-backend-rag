@@ -114,9 +114,11 @@ def test_query_raw(collection):
             while test_collection.count() == 0:
                 sleep(1)
 
+            doc = test_collection.get(include=['metadatas'], where={"chunk_idx": 0})
+            assert "lorem-ipsum.pdf" in doc['metadatas'][0]['source']
+
             response = client.post("/query/raw", json={"input": "lorem ipsum dolor",
                                                        "collection_name": TEST_COLLECTION_NAME})
             assert response.status_code == 200
             query_response: main.QueryResponse = response.json()
-            print(query_response)
             assert "\xa0Lorem\xa0ipsum\xa0dolor" in query_response['results']

@@ -7,10 +7,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version-file: 'pyproject.toml'
           cache: 'pip'
+          cache-dependency-path: '**/requirements-dev.txt'
 
       - run: cp .env.example .env
       - run: make requirements-dev
