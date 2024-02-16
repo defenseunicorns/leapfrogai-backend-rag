@@ -64,17 +64,6 @@ class DocumentStore:
                                    max_tokens=self.context_window,
                                    api_base=api_base, api_key=api_key,
                                    http_client=http_client)
-        vector_store: ChromaVectorStore = ChromaVectorStore(chroma_collection=self.collection)
-        storage_context: StorageContext = StorageContext.from_defaults(vector_store=vector_store)
-        service_context: ServiceContext = ServiceContext.from_defaults(embed_model=self.embeddings,
-                                                                       llm=self.llm,
-                                                                       context_window=self.context_window,
-                                                                       num_output=self.max_output,
-                                                                       chunk_size=self.chunk_size,
-                                                                       chunk_overlap=self.overlap_size)
-        self.index: VectorStoreIndex = VectorStoreIndex.from_documents(
-            [], storage_context=storage_context, service_context=service_context
-        )
 
     def get_all_documents(self) -> list[UniqueDocument]:
         if self.collection.count() > 0:
@@ -106,7 +95,19 @@ class DocumentStore:
         if response_mode is None:
             response_mode = self.response_mode
 
-        query_engine: BaseQueryEngine = self.index.as_query_engine(response_mode=response_mode)
+        vector_store: ChromaVectorStore = ChromaVectorStore(chroma_collection=self.collection)
+        storage_context: StorageContext = StorageContext.from_defaults(vector_store=vector_store)
+        service_context: ServiceContext = ServiceContext.from_defaults(embed_model=self.embeddings,
+                                                                       llm=self.llm,
+                                                                       context_window=self.context_window,
+                                                                       num_output=self.max_output,
+                                                                       chunk_size=self.chunk_size,
+                                                                       chunk_overlap=self.overlap_size)
+        index: VectorStoreIndex = VectorStoreIndex.from_documents(
+            [], storage_context=storage_context, service_context=service_context
+        )
+
+        query_engine: BaseQueryEngine = index.as_query_engine(response_mode=response_mode)
         query_result: Response = query_engine.query(query_text)
 
         if response_mode == "no_text":
