@@ -42,8 +42,8 @@ class DocumentStore:
             cache_folder=self.cache_folder,
             embeddings=self.embeddings
         )
-        self.collection = self.client.get_or_create_collection(name=default_collection_name,
-                                                               embedding_function=self.embeddings_function)
+        self.collection: Collection = self.client.get_or_create_collection(name=default_collection_name,
+                                                                           embedding_function=self.embeddings_function)
         self.chunk_size: int = int(os.environ.get('CHUNK_SIZE'))
         self.overlap_size: int = int(os.environ.get('OVERLAP_SIZE'))
         self.response_mode: str = os.environ.get('RESPONSE_MODE')
