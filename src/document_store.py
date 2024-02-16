@@ -25,7 +25,6 @@ class UniqueDocument(BaseModel):
     uuid: str
     source: str
 
-
 class DocumentStore:
     def __init__(self, default_collection_name="default"):
         self.default_collection_name = default_collection_name
