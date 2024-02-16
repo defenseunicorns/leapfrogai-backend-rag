@@ -11,7 +11,7 @@ jobs:
         with:
           python-version-file: 'pyproject.toml'
           cache: 'pip'
-          cache-dependency-path: '**/requirements-dev.txt'
+          cache-dependency-path: 'requirements-dev.txt'
 
       - run: cp .env.example .env
       - run: make requirements-dev
