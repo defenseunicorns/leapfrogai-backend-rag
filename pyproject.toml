@@ -26,4 +26,4 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pip-tools", "pytest", "pytest-timeout", "httpx"]
+dev = ["pip-tools", "pytest", "httpx"]
