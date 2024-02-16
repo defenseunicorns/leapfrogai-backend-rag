@@ -107,17 +107,6 @@ class DocumentStore:
         for uuid in uuids:
             self.collection.delete(where={'uuid': uuid})
 
-    # Try catch fails if collection cannot be found
-    def does_collection_exist(self, collection_name: str) -> bool:
-        try:
-            collection = self.client.get_collection(name=collection_name)
-            if collection.count() > 0:
-                return True
-        except ValueError:
-            return False
-
-        return False
-
     def query_llamaindex(self, query_text: str, response_mode: str = None,
                          collection_name: str = "default") -> str | None:
         if response_mode is None:
