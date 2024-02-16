@@ -118,4 +118,5 @@ def test_query_raw(collection):
                                                        "collection_name": TEST_COLLECTION_NAME})
             assert response.status_code == 200
             query_response: main.QueryResponse = response.json()
+            print(query_response)
             assert "\xa0Lorem\xa0ipsum\xa0dolor" in query_response['results']
