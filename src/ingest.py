@@ -2,6 +2,7 @@ import os
 import tempfile
 import uuid
 from typing import List
+import logging
 
 from chromadb.api.models import Collection
 from langchain.docstore.document import Document
@@ -80,11 +81,12 @@ class Ingest:
             all_metadata: list[dict] = [update_metadata(file_name, doc_uuid, idx, d.metadata)
                                         for idx, d in enumerate(texts)]
             ids: list[str] = get_uuids_for_document_texts(texts)
+            logging.debug(f"Found {len(contents)} parts in file {file_path}")
             self.collection.add(documents=contents, metadatas=all_metadata, ids=ids)
             # split and load into vector db
-            print(f"Found {len(data)} parts in file {file_path}")
+            logging.debug(f"File {file_name} loaded into collection {self.collection.name}")
         except Exception as e:
-            print(f"process_file: Error parsing file {file_path}.  {e}")
+            logging.error(f"process_file: Error parsing file {file_path}.  {e}")
 
     def load_file_bytes(self, file_bytes: bytes, file_name: str) -> None:
         _, file_extension = os.path.splitext(file_name)

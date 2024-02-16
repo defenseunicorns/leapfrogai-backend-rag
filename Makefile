@@ -17,6 +17,9 @@ build-requirements:
 build-requirements-dev:
 	pip-compile --extra dev -o requirements-dev.txt pyproject.toml --allow-unsafe
 
+dev:
+	python src/main.py
+
 requirements-dev:
 	python -m pip install -r requirements-dev.txt
 
