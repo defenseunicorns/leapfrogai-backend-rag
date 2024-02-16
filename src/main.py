@@ -77,21 +77,21 @@ async def upload(file: UploadFile) -> UploadResponse:
     return UploadResponse(filename=file.filename, succeed=True)
 
 
-def query_index(value: str, response_mode: str) -> QueryResponse:
+def query_index(value: str, response_mode: str, collection_name: str) -> QueryResponse:
     logging.debug("Query received")
-    outside_context = doc_store.query_llamaindex(value, response_mode)
+    outside_context = doc_store.query_llamaindex(value, response_mode, collection_name)
     logging.debug("The returned context is: " + str(outside_context))
     return QueryResponse(results=outside_context)
 
 
 @app.post("/query/refined")
 def query(query_data: QueryModel) -> QueryResponse:
-    return query_index(query_data.input, "refine")
+    return query_index(query_data.input, "refine", query_data.collection_name)
 
 
 @app.post("/query/raw")
 def query(query_data: QueryModel) -> QueryResponse:
-    return query_index(query_data.input, "no_text")
+    return query_index(query_data.input, "no_text", query_data.collection_name)
 
 
 @app.post("/delete/")
