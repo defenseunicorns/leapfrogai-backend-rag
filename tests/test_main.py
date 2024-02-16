@@ -1,3 +1,4 @@
+import logging
 from time import sleep
 
 import pytest as pytest
@@ -15,7 +16,7 @@ def collection():
     try:
         main.doc_store.client.delete_collection(TEST_COLLECTION_NAME)
     except ValueError:
-        "Collection does not exist, so it cannot be deleted."
+        logging.debug("Collection does not exist, so it cannot be deleted.")
 
     main.doc_store.collection = main.doc_store.client.get_or_create_collection(name=TEST_COLLECTION_NAME,
                                                                                embedding_function=main.doc_store.embeddings_function)
