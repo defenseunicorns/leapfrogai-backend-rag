@@ -145,6 +145,7 @@ httptools==0.6.1
     # via uvicorn
 httpx==0.26.0
     # via
+    #   leapfrogai-backend-rag (pyproject.toml)
     #   llama-index
     #   openai
 huggingface-hub==0.20.3
