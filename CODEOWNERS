@@ -1,16 +1,16 @@
 # Documentation and fallbacks for missed things
 * @defenseunicorns/leapfrogai
-*.md @defenseunicorns/leapfrogai 
+*.md @defenseunicorns/leapfrogai
 
 # Pipeline and Project Files
-/pyproject.toml @gerred @YrrepNoj @gphorvath
-/.github/ @gerred @YrrepNoj @gphorvath
-/.gitignore @gerred @YrrepNoj @gphorvath
-/Dockerfile @gerred @YrrepNoj @gphorvath
-/Makefile @gerred @YrrepNoj @gphorvath
-/requirements.txt @gerred @YrrepNoj @gphorvath
-/requirements-dev.txt @gerred @YrrepNoj @gphorvath
+/pyproject.toml @defenseunicorns/leapfrogai
+/.github/ @defenseunicorns/leapfrogai
+/.gitignore @defenseunicorns/leapfrogai 
+/Dockerfile @defenseunicorns/leapfrogai
+/Makefile @defenseunicorns/leapfrogai
+/requirements.txt @defenseunicorns/leapfrogai
+/requirements-dev.txt @defenseunicorns/leapfrogai
 
 # Additional privileged files
-/CODEOWNERS @jeff-mccoy @mikevanhemert @austenbryan @gerred
+/CODEOWNERS @jeff-mccoy @austenbryan @gerred
 /LICENSE @jeff-mccoy @austenbryan @gerred
