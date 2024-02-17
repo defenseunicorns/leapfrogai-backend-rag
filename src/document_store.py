@@ -7,7 +7,6 @@ import chromadb.utils.embedding_functions as embedding_functions
 import httpx
 from chromadb import ClientAPI, GetResult, Settings
 from chromadb.api.models import Collection
-from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.embeddings import Embeddings
 from llama_index import Response
@@ -18,6 +17,7 @@ from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores import ChromaVectorStore
 from pydantic import BaseModel
 
+from embeddings import PassThroughEmbeddings
 from ingest import Ingest
 
 
@@ -38,13 +38,8 @@ class DocumentStore:
                         model_name=os.environ.get("EMBEDDING_MODEL_NAME"),
                     )
         
-        self.embeddings: Embeddings = OpenAIEmbeddings(
-            model_name=os.environ.get("EMBEDDING_MODEL_NAME"),
-            openai_api_base=os.environ.get("OPENAI_API_BASE"),
-            openai_api_type="openai",
-            http_client=httpx.Client(verify=False),
-        )
-        
+        self.embeddings: Embeddings = PassThroughEmbeddings(embed_fn=self.embeddings_function)
+
         self.collection: Collection = self.client.get_or_create_collection(name=default_collection_name,
                                                                            embedding_function=self.embeddings_function)
         self.chunk_size: int = int(os.environ.get('CHUNK_SIZE'))
