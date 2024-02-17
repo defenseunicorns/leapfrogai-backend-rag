@@ -3,10 +3,11 @@ import sys
 from typing import List, Mapping
 
 import chromadb
+import chromadb.utils.embedding_functions as embedding_functions
 import httpx
 from chromadb import ClientAPI, GetResult, Settings
 from chromadb.api.models import Collection
-from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.embeddings import Embeddings
 from llama_index import Response
@@ -17,7 +18,6 @@ from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores import ChromaVectorStore
 from pydantic import BaseModel
 
-from embedding_functions import PassThroughEmbeddingsFunction
 from ingest import Ingest
 
 
@@ -25,23 +25,26 @@ class UniqueDocument(BaseModel):
     uuid: str
     source: str
 
-
 class DocumentStore:
     def __init__(self, default_collection_name="default"):
         self.default_collection_name = default_collection_name
         self.client: ClientAPI = chromadb.PersistentClient(path="db", settings=Settings(anonymized_telemetry=False))
-        self.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "hkunlp/instructor-xl"
-        self.cache_folder = "embedding-cache"
-        self.embeddings: Embeddings = SentenceTransformerEmbeddings(
-            model_name=self.embeddings_model_name,
-            model_kwargs={'device': 'cpu'},
-            cache_folder=self.cache_folder
+        self.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "instructor-xl"
+        
+        self.embeddings_function = embedding_functions.OpenAIEmbeddingFunction(
+                        api_key=os.environ.get("OPENAI_API_KEY"),
+                        api_base=os.environ.get("OPENAI_API_BASE"),
+                        api_type="openai",
+                        model_name=os.environ.get("EMBEDDING_MODEL_NAME"),
+                    )
+        
+        self.embeddings: Embeddings = OpenAIEmbeddings(
+            model_name=os.environ.get("EMBEDDING_MODEL_NAME"),
+            openai_api_base=os.environ.get("OPENAI_API_BASE"),
+            openai_api_type="openai",
+            http_client=httpx.Client(verify=False),
         )
-        self.embeddings_function = PassThroughEmbeddingsFunction(
-            model_name=self.embeddings_model_name,
-            cache_folder=self.cache_folder,
-            embeddings=self.embeddings
-        )
+        
         self.collection: Collection = self.client.get_or_create_collection(name=default_collection_name,
                                                                            embedding_function=self.embeddings_function)
         self.chunk_size: int = int(os.environ.get('CHUNK_SIZE'))

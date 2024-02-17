@@ -1,10 +1,16 @@
 import logging
+import os
 from time import sleep
 
 import pytest as pytest
 from fastapi.testclient import TestClient
+from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_community.vectorstores.chroma import Chroma
+from langchain_core.embeddings import Embeddings
+from llama_index import ServiceContext
 
 import main
+from embedding_functions import PassThroughEmbeddingsFunction
 from ingest import update_metadata
 from main import app
 
@@ -13,6 +19,24 @@ TEST_COLLECTION_NAME = "test"
 
 @pytest.fixture
 def collection():
+    main.doc_store.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "hkunlp/instructor-xl"
+    main.doc_store.embeddings: Embeddings = SentenceTransformerEmbeddings(
+        model_name=main.doc_store.embeddings_model_name,
+        model_kwargs={'device': 'cpu'},
+    )
+    main.doc_store.embeddings_function = PassThroughEmbeddingsFunction(
+        model_name=main.doc_store.embeddings_model_name,
+        embeddings=main.doc_store.embeddings)
+    main.doc_store.chroma_db = Chroma(embedding_function=main.doc_store.embeddings,
+                                      collection_name=TEST_COLLECTION_NAME,
+                                      client=main.doc_store.client)
+    main.doc_store.service_context = ServiceContext.from_defaults(embed_model=main.doc_store.embeddings,
+                                                                  llm=main.doc_store.llm,
+                                                                  context_window=main.doc_store.context_window,
+                                                                  num_output=main.doc_store.max_output,
+                                                                  chunk_size=main.doc_store.chunk_size,
+                                                                  chunk_overlap=main.doc_store.overlap_size)
+
     try:
         main.doc_store.client.delete_collection(TEST_COLLECTION_NAME)
     except ValueError:
