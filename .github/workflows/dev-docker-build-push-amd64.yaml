@@ -1,4 +1,4 @@
-name: Dev GPU Artifact
+name: Dev AMD64 Artifact
 
 on:
   push:
