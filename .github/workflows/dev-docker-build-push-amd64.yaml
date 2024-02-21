@@ -6,17 +6,14 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  VERSION: dev
+
 jobs:
   push-release-amd64:
     runs-on: ai-ubuntu-big-boy-4-core
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-      - name: Disable shallow clone
-        run: git fetch --unshallow
-
-      - name: Set VERSION
-        run: echo "VERSION=dev" >> $GITHUB_ENV
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
