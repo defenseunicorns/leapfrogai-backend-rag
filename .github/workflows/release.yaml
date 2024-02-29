@@ -33,9 +33,7 @@ jobs:
       - name: Build images
         uses: docker/build-push-action@v5
         with:
-          platforms: 
-            linux/amd64
-            linux/arm64
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.get_version.outputs.version-without-v }}
           push: true
 
