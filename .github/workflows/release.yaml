@@ -7,6 +7,9 @@ on:
       - dev
   workflow_dispatch:
 
+env:
+  REGISTRY: ghcr.io
+
 jobs:
   publish:
     runs-on: ai-ubuntu-big-boy-4-core
@@ -21,7 +24,7 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
