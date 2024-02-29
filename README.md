@@ -12,8 +12,8 @@ Stand alone Retrieval Augmented Generation Backend (RAG) for LeapfrogAI that use
 
 For local image building and running.
 
-```
-make docker build
+``` bash
+make docker-build
 
-make docker run
+make docker-run # handles env file and db directory mount
 ```
