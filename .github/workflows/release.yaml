@@ -6,9 +6,6 @@ on:
       - v*
   workflow_dispatch:
 
-env:
-  VERSION: dev
-
 jobs:
   push-release-amd64:
     runs-on: ai-ubuntu-big-boy-4-core
@@ -24,13 +21,13 @@ jobs:
 
       - name: Push images
         run: |
-          make docker-release VERSION=$VERSION
+          make docker-release VERSION=$GITHUB_REF_NAME
 
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@f95763914e20e493bb5d45d63e30e17138f981d6 # v1.0.0
 
       - name: Build Zarf Package
-        run: zarf package create . --set=PACKAGE_VERSION=$VERSION --confirm
+        run: zarf package create . --set=PACKAGE_VERSION=$GITHUB_REF_NAME --confirm
 
       - name: Publish Zarf Package
         run: zarf package publish zarf-package-*.zst oci://ghcr.io/defenseunicorns/packages
