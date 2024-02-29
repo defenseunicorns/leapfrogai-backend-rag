@@ -27,13 +27,20 @@ requirements:
 	pip-sync requirements.txt requirements-dev.txt
 
 docker-build:
-	docker build -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH} . --build-arg ARCH=${ARCH}
+	docker build -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION} . --build-arg ARCH=${ARCH}
+
+docker-release:
+	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION} --push .
 
 docker-run:
-	docker run -p 8000:8000 -v ~/.db/:/leapfrogai/db/ -d --env-file .env ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}
-
-docker-push:
-	docker push ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}-${ARCH}
+	mkdir -p db
+	if [ -f .env ]; then \
+		echo "env file exists"; \
+	else \
+		echo "env file does not exist, using .env.example."; \
+		cp .env.example .env; \
+	fi
+	docker run -p 8000:8000 -v ./db/:/leapfrogai/db/ -d --env-file .env ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION}
 
 test:
 	pytest tests/test_main.py
