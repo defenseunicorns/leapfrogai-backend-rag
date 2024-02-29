@@ -25,9 +25,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push images
-        run: |
-          make docker-release VERSION=${{ steps.get_version.outputs.version-without-v }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build images
+        uses: docker/build-push-action@v5
+        with:
+          platforms: 
+            linux/amd64
+            linux/arm64
+          tags: ${{ steps.get_version.outputs.version-without-v }}
+          push: true
 
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@f95763914e20e493bb5d45d63e30e17138f981d6 # v1.0.0
