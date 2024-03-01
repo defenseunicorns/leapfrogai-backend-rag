@@ -17,7 +17,7 @@ constants:
 variables:
   - name: PREFIX
     description: Prefix to proxy requests to the application
-    default: "/rag"
+    default: "/rag-server"
     prompt: true
     sensitive: false
   - name: API_BASE
