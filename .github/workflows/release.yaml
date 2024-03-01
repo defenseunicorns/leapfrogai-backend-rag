@@ -1,4 +1,4 @@
-name: Dev AMD64 Artifact
+name: Release Artifacts
 
 on:
   push:
@@ -25,7 +25,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push images
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build images
         run: |
           make docker-release VERSION=${{ steps.get_version.outputs.version-without-v }}
 
@@ -33,7 +38,7 @@ jobs:
         uses: defenseunicorns/setup-zarf@f95763914e20e493bb5d45d63e30e17138f981d6 # v1.0.0
 
       - name: Build Zarf Package
-        run: zarf package create . --set=PACKAGE_VERSION=${{ steps.get_version.outputs.version-without-v }} --confirm
+        run: zarf package create . --set=PACKAGE_VERSION=${{ steps.get_version.outputs.version-without-v }} --set=IMAGE_VERSION=${{ steps.get_version.outputs.version-without-v }} --confirm
 
       - name: Publish Zarf Package
         run: zarf package publish zarf-package-*.zst oci://ghcr.io/defenseunicorns/packages
