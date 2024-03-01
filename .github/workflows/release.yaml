@@ -7,9 +7,6 @@ on:
       - dev
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-
 jobs:
   publish:
     runs-on: ai-ubuntu-big-boy-4-core
@@ -24,7 +21,6 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
-          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -34,11 +30,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build images
-        uses: docker/build-push-action@v5
-        with:
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.get_version.outputs.version-without-v }}
-          push: true
+        run: |
+          make docker-buildx VERSION=${{ steps.get_version.outputs.version-without-v }}
 
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@f95763914e20e493bb5d45d63e30e17138f981d6 # v1.0.0
