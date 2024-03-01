@@ -32,7 +32,7 @@ jobs:
 
       - name: Build images
         run: |
-          make docker-buildx VERSION=${{ steps.get_version.outputs.version-without-v }}
+          make docker-release VERSION=${{ steps.get_version.outputs.version-without-v }}
 
       - name: Install Zarf
         uses: defenseunicorns/setup-zarf@f95763914e20e493bb5d45d63e30e17138f981d6 # v1.0.0
