@@ -1,5 +1,5 @@
 image:
-  lfaiRagTag: "0.0.1"
+  lfaiRagTag: "0.2.0"
 
 rag:
   replicas: "1"
