@@ -1,0 +1,26 @@
+apiVersion: uds.dev/v1alpha1
+kind: Package
+metadata:
+  name: leapfrogai-rag
+  namespace: {{ .Release.Namespace }}
+spec:
+  network:
+    expose:
+      - service: rag 
+        podLabels:
+          app: rag
+        host: {{ .Values.package.host }}
+        gateway: tenant 
+        port: 8000
+
+    allow:
+      - direction: Ingress
+        remoteGenerated: Anywhere
+
+      - direction: Egress
+        remoteGenerated: Anywhere
+      
+      - direction: Egress
+        podLabels:
+          app: rag
+        remoteGenerated: Anywhere
