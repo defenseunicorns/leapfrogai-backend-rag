@@ -63,7 +63,7 @@ variables:
 
 components:
   - name: rag
-    require: true
+    required: true
     charts:
       - name: rag
         namespace: leapfrogai
