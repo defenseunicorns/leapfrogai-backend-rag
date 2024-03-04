@@ -1,5 +1,5 @@
 image:
-  lfaiRagTag: "0.2.0"
+  lfaiRagTag: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
 
 rag:
   replicas: "1"
