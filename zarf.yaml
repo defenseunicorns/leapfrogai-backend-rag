@@ -15,11 +15,6 @@ constants:
     value: "dummy-key"
 
 variables:
-  - name: PREFIX
-    description: Prefix to proxy requests to the application
-    default: "/rag-server"
-    prompt: true
-    sensitive: false
   - name: API_BASE
     description: Base address for the chat API
     default: "http://api.leapfrogai.svc.cluster.local:8080/openai/v1"

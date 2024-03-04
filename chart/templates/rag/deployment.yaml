@@ -39,8 +39,6 @@ spec:
             value: "{{ .Values.env.responseMode }}"
           - name: SSL_VERIFICATION
             value: "{{ .Values.env.sslVerification }}"
-          - name: PREFIX
-            value: "{{ .Values.env.prefix }}"
           ports:
             - containerPort: 8000
           livenessProbe:

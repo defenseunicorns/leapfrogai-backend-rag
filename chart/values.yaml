@@ -15,4 +15,6 @@ env:
   overlapSize: "###ZARF_VAR_OVERLAP_SIZE###"
   responseMode: "###ZARF_VAR_RESPONSE_MODE###"
   sslVerification: "###ZARF_VAR_SSL_VERIFICATION###"
-  prefix: "###ZARF_VAR_PREFIX###"
+
+package:
+  host: leapfrogai-rag
