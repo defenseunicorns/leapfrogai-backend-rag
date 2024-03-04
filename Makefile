@@ -44,3 +44,15 @@ docker-run:
 
 test:
 	pytest tests/test_main.py
+
+zarf-create:
+	zarf package create . --confirm --set=PACKAGE_VERSION=${VERSION} --set=IMAGE_VERSION=${VERSION}
+
+zarf-create-local-registry:
+	zarf package create . --confirm --registry-override ghcr.io=localhost:5000 --set IMG=defenseunicorns/leapfrogai/rag:${VERSION}
+
+zarf-deploy:
+	zarf package deploy --confirm zarf-package-*.tar.zst
+
+zarf-publish:
+	zarf package publish zarf-*.tar.zst oci://ghcr.io/defenseunicorns/leapfrogai/packages/
