@@ -72,4 +72,4 @@ components:
         valuesFiles:
           - "chart/values.yaml"
     images:
-      - "ghcr.io/defenseunicorns/leapfrogai/rag:###ZARF_PKG_TMPL_IMAGE_VERSION###"
+      - ghcr.io/defenseunicorns/leapfrogai/rag:"###ZARF_PKG_TMPL_IMAGE_VERSION###"
