@@ -65,6 +65,11 @@ variables:
     default: ""
     prompt: true
     sensitive: false
+  - name: EMBEDDING_MODEL_NAME
+    description: Embedding model name
+    default: "text-embeddings"
+    prompt: true
+    sensitive: false
 
 components:
   - name: rag
