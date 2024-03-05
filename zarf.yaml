@@ -60,6 +60,11 @@ variables:
     default: "False"
     prompt: true
     sensitive: false
+  - name: PREFIX
+    description: Prefix
+    default: ""
+    prompt: true
+    sensitive: false
 
 components:
   - name: rag
@@ -72,4 +77,4 @@ components:
         valuesFiles:
           - "chart/values.yaml"
     images:
-      - ghcr.io/defenseunicorns/leapfrogai/rag:"###ZARF_PKG_TMPL_IMAGE_VERSION###"
+      - "ghcr.io/defenseunicorns/leapfrogai/rag:###ZARF_PKG_TMPL_IMAGE_VERSION###"
