@@ -2,6 +2,6 @@ package:
   create:
     set:
       image_repository: "ghcr.io/defenseunicorns/leapfrogai/rag"
-      image_version: dev
-      package_version: dev
+      image_version: 0.3.0
+      package_version: 0.3.0
       name: rag
