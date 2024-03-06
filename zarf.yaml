@@ -15,11 +15,6 @@ constants:
     value: "dummy-key"
 
 variables:
-  - name: PREFIX
-    description: Prefix to proxy requests to the application
-    default: "/rag-server"
-    prompt: true
-    sensitive: false
   - name: API_BASE
     description: Base address for the chat API
     default: "http://api.leapfrogai.svc.cluster.local:8080/openai/v1"
@@ -27,7 +22,7 @@ variables:
     sensitive: false
   - name: MODEL
     description: Model to query when performing refining queries
-    default: "llamacpp"
+    default: "llama-cpp"
     prompt: true
     sensitive: false
   - name: TEMPERATURE
@@ -65,10 +60,20 @@ variables:
     default: "False"
     prompt: true
     sensitive: false
+  - name: PREFIX
+    description: Prefix
+    default: ""
+    prompt: true
+    sensitive: false
+  - name: EMBEDDING_MODEL_NAME
+    description: Embedding model name
+    default: "text-embeddings"
+    prompt: true
+    sensitive: false
 
 components:
   - name: rag
-    require: true
+    required: true
     charts:
       - name: rag
         namespace: leapfrogai
