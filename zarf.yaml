@@ -22,7 +22,7 @@ variables:
     sensitive: false
   - name: MODEL
     description: Model to query when performing refining queries
-    default: "llama-cpp"
+    default: "llama-cpp-python"
     prompt: true
     sensitive: false
   - name: TEMPERATURE
