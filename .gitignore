@@ -8,3 +8,5 @@ files/
 .env
 tokenizer-cache/
 .vscode/
+zarf-sbom/
+zarf-package*

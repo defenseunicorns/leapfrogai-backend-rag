@@ -1,5 +1,5 @@
 image:
-  lfaiRagTag: "0.2.0"
+  lfaiRagTag: "###ZARF_CONST_IMAGE_VERSION###"
 
 rag:
   replicas: "1"
@@ -16,3 +16,7 @@ env:
   responseMode: "###ZARF_VAR_RESPONSE_MODE###"
   sslVerification: "###ZARF_VAR_SSL_VERIFICATION###"
   prefix: "###ZARF_VAR_PREFIX###"
+  embeddingModelName: "###ZARF_VAR_EMBEDDING_MODEL_NAME###"
+
+package:
+  host: leapfrogai-rag

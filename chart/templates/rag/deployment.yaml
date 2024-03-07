@@ -41,6 +41,8 @@ spec:
             value: "{{ .Values.env.sslVerification }}"
           - name: PREFIX
             value: "{{ .Values.env.prefix }}"
+          - name: EMBEDDING_MODEL_NAME
+            value: "{{ .Values.env.embeddingModelName }}"
           ports:
             - containerPort: 8000
           livenessProbe:
