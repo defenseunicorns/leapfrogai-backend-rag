@@ -16,7 +16,7 @@ jobs:
 
       - name: Version
         id: get_version
-        uses: battila7/get-version-action@v2
+        uses: battila7/get-version-action@90eb8fc70f6dfcf3f9b95ed8f164d2c05038e729 # v2.2.1
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
