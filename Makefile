@@ -29,9 +29,6 @@ requirements:
 docker-build:
 	docker build -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION} . --build-arg ARCH=${ARCH}
 
-docker-release:
-	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION} --push .
-
 docker-run:
 	mkdir -p db
 	if [ -f .env ]; then \
@@ -53,6 +50,3 @@ zarf-create-local-registry:
 
 zarf-deploy:
 	zarf package deploy --confirm zarf-package-*.tar.zst
-
-zarf-publish:
-	zarf package publish zarf-*.tar.zst oci://ghcr.io/defenseunicorns/leapfrogai/packages/
