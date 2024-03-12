@@ -57,11 +57,11 @@ class HealthResponse(BaseModel):
 
 
 @app.post("/upload/")
-async def upload(file: UploadFile) -> UploadResponse:
+async def upload(file: UploadFile, collection_name: str = "default") -> UploadResponse:
     try:
         logging.debug("Received file: " + file.filename)
         contents: bytes = await file.read()
-        thread = threading.Thread(target=doc_store.load_file_bytes, args=(contents, file.filename))
+        thread = threading.Thread(target=doc_store.load_file_bytes, args=(contents, file.filename, collection_name))
         thread.start()
         logging.debug("File load started")
     except HTTPException as e:

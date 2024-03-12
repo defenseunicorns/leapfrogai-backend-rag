@@ -29,6 +29,20 @@ requirements:
 docker-build:
 	docker build -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION} . --build-arg ARCH=${ARCH}
 
+docker-build-local-registry:
+	if [ -f .env ]; then \
+		echo "env file exists"; \
+	else \
+		echo "env file does not exist, using .env.example."; \
+		cp .env.example .env; \
+	fi
+	docker build -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION} .
+	docker tag ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION} localhost:5000/defenseunicorns/leapfrogai/rag:${VERSION}
+	docker push localhost:5000/defenseunicorns/leapfrogai/rag:${VERSION}
+
+docker-release:
+	docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/defenseunicorns/leapfrogai/rag:${VERSION} --push .
+
 docker-run:
 	mkdir -p db
 	if [ -f .env ]; then \

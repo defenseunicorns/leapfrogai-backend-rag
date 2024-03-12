@@ -90,6 +90,11 @@ class DocumentStore:
 
             return self.index_dictionary[collection_name]
 
+    def get_or_create_collection(self, collection_name: str):
+        return self.client.get_or_create_collection(name=collection_name,
+                                                    embedding_function=self.embeddings_function)
+
+
     def get_all_documents(self) -> list[UniqueDocument]:
         if self.collection.count() > 0:
             all_documents: GetResult = self.collection.get(include=['metadatas'], where={"chunk_idx": 0})
@@ -125,5 +130,6 @@ class DocumentStore:
 
         return query_response
 
-    def load_file_bytes(self, file_bytes: bytes, file_name: str) -> None:
-        self.ingestor.load_file_bytes(file_bytes, file_name)
+    def load_file_bytes(self, file_bytes: bytes, file_name: str, collection_name: str) -> None:
+        active_collection: Collection = self.get_or_create_collection(collection_name)
+        self.ingestor.load_file_bytes(file_bytes, file_name, active_collection)

@@ -22,7 +22,7 @@ variables:
     sensitive: false
   - name: MODEL
     description: Model to query when performing refining queries
-    default: "llama-cpp-python"
+    default: "vllm"
     prompt: true
     sensitive: false
   - name: TEMPERATURE
@@ -52,7 +52,7 @@ variables:
     sensitive: false
   - name: RESPONSE_MODE
     description: Response mode to use when querying the vector store
-    default: "refine"
+    default: "raw"
     prompt: true
     sensitive: false
   - name: SSL_VERIFICATION
