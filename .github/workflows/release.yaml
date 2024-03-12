@@ -45,5 +45,5 @@ jobs:
 
       - name: Publish Zarf Package
         run: |
-          zarf package publish zarf-package-rag-amd64.zst oci://ghcr.io/defenseunicorns/packages/leapfrogai
-          zarf package publish zarf-package-rag-arm64.zst oci://ghcr.io/defenseunicorns/packages/leapfrogai
+          zarf package publish zarf-package-rag-amd64-${{ steps.get_version.outputs.version-without-v }}.tar.zst oci://ghcr.io/defenseunicorns/packages/leapfrogai
+          zarf package publish zarf-package-rag-arm64-${{ steps.get_version.outputs.version-without-v }}.tar.zst oci://ghcr.io/defenseunicorns/packages/leapfrogai
