@@ -76,6 +76,24 @@ async def upload(file: UploadFile, collection_name: str = "default") -> UploadRe
 
     return UploadResponse(filename=file.filename, succeed=True)
 
+@app.post("/upload/raw")
+async def upload_raw(text: str, filename: str, collection_name: str = "default") -> UploadResponse:
+    try:
+        logging.debug("Received raw data: " + filename)
+        contents: bytes = str.encode(text)
+        thread = threading.Thread(target=doc_store.load_file_bytes, args=(contents, filename, collection_name))
+        thread.start()
+        logging.debug("Raw data load started")
+    except HTTPException as e:
+        raise HTTPException(
+            status_code=e.status_code,
+            detail=e.detail,
+        )
+    except Exception as e:
+        raise Exception(e)
+
+    return UploadResponse(filename=filename, succeed=True)
+
 
 def query_index(value: str, response_mode: str, collection_name: str) -> QueryResponse:
     logging.debug("Query received")
@@ -85,23 +103,23 @@ def query_index(value: str, response_mode: str, collection_name: str) -> QueryRe
 
 
 @app.post("/query/refined")
-def query(query_data: QueryModel) -> QueryResponse:
+def query_refined(query_data: QueryModel) -> QueryResponse:
     return query_index(query_data.input, "refine", query_data.collection_name)
 
 
 @app.post("/query/raw")
-def query(query_data: QueryModel) -> QueryResponse:
+def query_raw(query_data: QueryModel) -> QueryResponse:
     return query_index(query_data.input, "no_text", query_data.collection_name)
 
 
 @app.post("/delete/")
-def query(doc_ids: List[str] = Query(None)) -> None:
+def delete(doc_ids: List[str] = Query(None)) -> None:
     if len(doc_ids) > 0:
         doc_store.delete_documents(doc_ids)
 
 
 @app.get("/list/")
-def query() -> list[UniqueDocument]:
+def list() -> list[UniqueDocument]:
     return doc_store.get_all_documents()
 
 
