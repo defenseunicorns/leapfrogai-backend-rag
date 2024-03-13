@@ -77,10 +77,10 @@ async def upload(file: UploadFile, collection_name: str = "default") -> UploadRe
     return UploadResponse(filename=file.filename, succeed=True)
 
 @app.post("/upload/raw")
-async def upload_raw(text: str, filename: str, collection_name: str = "default") -> UploadResponse:
+async def upload_raw(data: str, filename: str, collection_name: str = "default") -> UploadResponse:
     try:
         logging.debug("Received raw data: " + filename)
-        contents: bytes = str.encode(text)
+        contents: bytes = str.encode(data)
         thread = threading.Thread(target=doc_store.load_file_bytes, args=(contents, filename, collection_name))
         thread.start()
         logging.debug("Raw data load started")
