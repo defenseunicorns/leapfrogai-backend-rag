@@ -87,6 +87,7 @@ class Ingest:
             logging.debug(f"File {file_name} loaded into collection {self.collection.name}")
         except Exception as e:
             logging.error(f"process_file: Error parsing file {file_path}.  {e}")
+            raise Exception(e)
 
     def load_file_bytes(self, file_bytes: bytes, file_name: str) -> None:
         _, file_extension = os.path.splitext(file_name)

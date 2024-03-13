@@ -15,6 +15,7 @@ from llama_index.core.base_query_engine import BaseQueryEngine
 from llama_index.llms import OpenAILike, LLM
 from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores import ChromaVectorStore
+import logging
 from pydantic import BaseModel
 
 from embeddings import PassThroughEmbeddings
@@ -58,11 +59,11 @@ class DocumentStore:
         api_key: str = os.environ.get('OPENAI_API_KEY')
         api_base: str = os.environ.get('OPENAI_API_BASE')
         verify_https: bool = os.environ.get('SSL_VERIFICATION').lower() == "true"
-        http_client: httpx.Client = httpx.Client(verify=verify_https)
+        self.http_client: httpx.Client = httpx.Client(verify=verify_https)
         self.llm: LLM = OpenAILike(is_chat_model=True, model=self.model, temperature=self.temperature,
                                    max_tokens=self.context_window,
                                    api_base=api_base, api_key=api_key,
-                                   http_client=http_client)
+                                   http_client=self.http_client)
         self.service_context: ServiceContext = ServiceContext.from_defaults(embed_model=self.embeddings,
                                                                             llm=self.llm,
                                                                             context_window=self.context_window,
@@ -127,3 +128,10 @@ class DocumentStore:
 
     def load_file_bytes(self, file_bytes: bytes, file_name: str) -> None:
         self.ingestor.load_file_bytes(file_bytes, file_name)
+
+    def api_healthcheck(self) -> httpx.Response:
+        try:
+            response = self.http_client.get(self.llm.api_base + 'healthz')
+        except Exception as e:
+            logging.error("The upstream API health check has failed with error: {}".format(e))
+

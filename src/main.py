@@ -8,9 +8,10 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
 
 from document_store import DocumentStore, UniqueDocument
+from utils.helpers import RaisingThread, upstream_health_check
+from utils.types import QueryModel, UploadResponse, QueryResponse, HealthResponse
 
 path = os.getcwd()
 path = os.path.join(path, ".env")
@@ -20,6 +21,7 @@ debug = False
 
 prefix: str = os.environ['PREFIX'] or ""
 app = FastAPI(root_path=prefix)
+# logging.basicConfig(level=logging.DEBUG)
 
 doc_store = DocumentStore()
 
@@ -38,32 +40,15 @@ app.add_middleware(
 )
 
 
-class QueryModel(BaseModel):
-    input: str = Field(default=None, examples=["List some key points from the documents."])
-    collection_name: str = Field(default="default")
-
-
-class UploadResponse(BaseModel):
-    filename: str
-    succeed: bool
-
-
-class QueryResponse(BaseModel):
-    results: str
-
-
-class HealthResponse(BaseModel):
-    status: str
-
-
 @app.post("/upload/")
 async def upload(file: UploadFile) -> UploadResponse:
     try:
         logging.debug("Received file: " + file.filename)
         contents: bytes = await file.read()
-        thread = threading.Thread(target=doc_store.load_file_bytes, args=(contents, file.filename))
+        thread = RaisingThread(target=doc_store.load_file_bytes, args=(contents, file.filename))
         thread.start()
         logging.debug("File load started")
+        thread.join()
     except HTTPException as e:
         raise HTTPException(
             status_code=e.status_code,
@@ -89,11 +74,13 @@ def query(query_data: QueryModel) -> QueryResponse:
     return query_index(query_data.input, "refine", query_data.collection_name)
 
 
+@upstream_health_check(doc_store)
 @app.post("/query/raw")
 def query(query_data: QueryModel) -> QueryResponse:
     return query_index(query_data.input, "no_text", query_data.collection_name)
 
 
+@upstream_health_check(doc_store)
 @app.post("/delete/")
 def query(doc_ids: List[str] = Query(None)) -> None:
     if len(doc_ids) > 0:
@@ -102,6 +89,7 @@ def query(doc_ids: List[str] = Query(None)) -> None:
 
 @app.get("/list/")
 def query() -> list[UniqueDocument]:
+    doc_store.api_healthcheck()
     return doc_store.get_all_documents()
 
 
