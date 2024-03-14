@@ -23,7 +23,6 @@ debug = False
 
 prefix: str = os.environ['PREFIX'] or ""
 app = FastAPI(root_path=prefix)
-# logging.basicConfig(level=logging.DEBUG)
 
 doc_store = DocumentStore()
 

@@ -13,8 +13,12 @@ import main
 from embedding_functions import PassThroughEmbeddingsFunction
 from ingest import update_metadata
 from main import app
+from utils.helpers import remove_middleware
 
 TEST_COLLECTION_NAME = "test"
+
+#remove upstream healthcheck for unit testing
+app = remove_middleware(app, "upstream_api_healthcheck")
 
 
 @pytest.fixture
