@@ -131,7 +131,14 @@ class DocumentStore:
 
     def api_healthcheck(self) -> httpx.Response:
         try:
-            response = self.http_client.get(self.llm.api_base + 'healthz')
+            # Make a GET request to the models endpoint to check if it's alive
+            # TODO: /models was chosen because it's in both the base API and openai/v1
+            # Should there be a /healthz endpoint at openai/v1?
+            headers = {'api_key':self.llm.api_key}
+            response = self.http_client.get(self.llm.api_base+'models',headers=headers)
         except Exception as e:
             logging.error("The upstream API health check has failed with error: {}".format(e))
+            raise Exception(e)
+        
+        return response
 

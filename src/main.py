@@ -6,11 +6,13 @@ from typing import List
 
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI, UploadFile, HTTPException, Query
+from fastapi import FastAPI, UploadFile, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from requests import HTTPError
+
 
 from document_store import DocumentStore, UniqueDocument
-from utils.helpers import RaisingThread, upstream_health_check
+from utils.helpers import RaisingThread
 from utils.types import QueryModel, UploadResponse, QueryResponse, HealthResponse
 
 path = os.getcwd()
@@ -38,6 +40,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware('http')
+async def upstream_api_healthcheck(request: Request, call_next):
+    """Makes a healthcheck to the upstream OpenAI compatible API before making requests"""
+    upstream_response = doc_store.api_healthcheck()
+    if upstream_response.status_code != 200:
+        logging.error("Upstream health check has failed: {}".format(upstream_response.json()))
+        raise HTTPError(response=upstream_response)
+    else:
+        logging.debug("Upstream health check has finished successfully")
+        downstream_response = await call_next(request)
+        return downstream_response
 
 
 @app.post("/upload/")
@@ -74,13 +88,11 @@ def query(query_data: QueryModel) -> QueryResponse:
     return query_index(query_data.input, "refine", query_data.collection_name)
 
 
-@upstream_health_check(doc_store)
 @app.post("/query/raw")
 def query(query_data: QueryModel) -> QueryResponse:
     return query_index(query_data.input, "no_text", query_data.collection_name)
 
 
-@upstream_health_check(doc_store)
 @app.post("/delete/")
 def query(doc_ids: List[str] = Query(None)) -> None:
     if len(doc_ids) > 0:
@@ -89,7 +101,6 @@ def query(doc_ids: List[str] = Query(None)) -> None:
 
 @app.get("/list/")
 def query() -> list[UniqueDocument]:
-    doc_store.api_healthcheck()
     return doc_store.get_all_documents()
 
 
