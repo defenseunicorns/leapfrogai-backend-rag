@@ -18,7 +18,7 @@ from utils.helpers import remove_middleware
 TEST_COLLECTION_NAME = "test"
 
 #remove upstream healthcheck for unit testing
-app = remove_middleware(app, "upstream_api_healthcheck")
+app = remove_middleware(app, "BaseHTTPMiddleware")
 
 
 @pytest.fixture
