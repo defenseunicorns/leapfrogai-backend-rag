@@ -12,6 +12,8 @@ from langchain_core.embeddings import Embeddings
 from llama_index import Response
 from llama_index import VectorStoreIndex, ServiceContext
 from llama_index.core.base_query_engine import BaseQueryEngine
+from llama_index.core.base_retriever import BaseRetriever
+from llama_index.indices.vector_store import VectorIndexRetriever
 from llama_index.llms import OpenAILike, LLM
 from llama_index.storage.storage_context import StorageContext
 from llama_index.vector_stores import ChromaVectorStore
@@ -49,6 +51,7 @@ class DocumentStore:
         self.max_output: int = int(os.environ.get('MAX_OUTPUT'))
         self.temperature: float = float(os.environ.get('TEMPERATURE'))
         self.model: str = os.environ.get('MODEL')
+        self.top_k: int = int(os.environ.get("TOP_K"))
         self.ingestor: Ingest = Ingest(self.collection, self.chunk_size, self.overlap_size)
         self.chroma_db: Chroma = Chroma(embedding_function=self.embeddings,
                                         collection_name=default_collection_name,
@@ -72,7 +75,7 @@ class DocumentStore:
         self.index_dictionary: dict = {}
         self.index: VectorStoreIndex = self.construct_index_for_collection(self.default_collection_name)
 
-    def construct_index_for_collection(self, collection_name: str):
+    def construct_index_for_collection(self, collection_name: str) -> VectorStoreIndex:
         collection_entry: Collection = self.index_dictionary.get(collection_name)
 
         if collection_entry is not None:
@@ -116,11 +119,14 @@ class DocumentStore:
             response_mode = self.response_mode
 
         if collection_name is None or collection_name is self.default_collection_name or collection_name.strip() == "":
-            collection_index = self.index
+            collection_index: VectorStoreIndex = self.index
         else:
-            collection_index = self.construct_index_for_collection(collection_name)
+            collection_index: VectorStoreIndex = self.construct_index_for_collection(collection_name)
 
-        query_engine: BaseQueryEngine = collection_index.as_query_engine(response_mode=response_mode)
+        retriever: BaseRetriever = collection_index.as_retriever(similarity_top_k=self.top_k)
+
+        query_engine: BaseQueryEngine = collection_index.as_query_engine(response_mode=response_mode,
+                                                                         retriever=retriever)
         query_result: Response = query_engine.query(query_text)
 
         if response_mode == "no_text":

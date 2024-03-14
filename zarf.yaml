@@ -70,6 +70,11 @@ variables:
     default: "text-embeddings"
     prompt: true
     sensitive: false
+  - name: TOP_K
+    description: The maximum number of results to return when querying the vector db
+    default: "10"
+    prompt: true
+    sensitive: false
 
 components:
   - name: rag

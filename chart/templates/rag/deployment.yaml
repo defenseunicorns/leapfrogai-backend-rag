@@ -43,6 +43,8 @@ spec:
             value: "{{ .Values.env.prefix }}"
           - name: EMBEDDING_MODEL_NAME
             value: "{{ .Values.env.embeddingModelName }}"
+          - name: TOP_K
+            value: "{{ .Values.env.topK }}"
           ports:
             - containerPort: 8000
           livenessProbe:
