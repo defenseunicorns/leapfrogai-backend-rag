@@ -123,10 +123,8 @@ class DocumentStore:
         else:
             collection_index: VectorStoreIndex = self.construct_index_for_collection(collection_name)
 
-        retriever: BaseRetriever = collection_index.as_retriever(similarity_top_k=self.top_k)
-
         query_engine: BaseQueryEngine = collection_index.as_query_engine(response_mode=response_mode,
-                                                                         retriever=retriever)
+                                                                         similarity_top_k=self.top_k)
         query_result: Response = query_engine.query(query_text)
 
         if response_mode == "no_text":
