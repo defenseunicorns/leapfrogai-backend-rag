@@ -44,14 +44,18 @@ app.add_middleware(
 @app.middleware('http')
 async def upstream_api_healthcheck(request: Request, call_next):
     """Makes a healthcheck to the upstream OpenAI compatible API before making requests"""
-    upstream_response = doc_store.api_healthcheck()
-    if upstream_response.status_code != 200:
-        logging.error("Upstream health check has failed: {}".format(upstream_response.json()))
-        raise HTTPError(response=upstream_response)
-    else:
-        logging.debug("Upstream health check has finished successfully")
-        downstream_response = await call_next(request)
-        return downstream_response
+    # only run the healthcheck on endpoints not whitelisted
+    whitelisted_endpoints = ['/openapi.json','docs','healthz']
+    if list(filter(str(request.url).endswith, whitelisted_endpoints)) == []:
+        upstream_response = doc_store.api_healthcheck()
+        if upstream_response.status_code != 200:
+            logging.error("Upstream health check has failed: {}".format(upstream_response.json()))
+            raise HTTPError(response=upstream_response)
+        else:
+            logging.debug("Upstream health check has finished successfully")
+        
+    downstream_response = await call_next(request)
+    return downstream_response
 
 
 @app.post("/upload/")
