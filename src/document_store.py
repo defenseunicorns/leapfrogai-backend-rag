@@ -104,7 +104,7 @@ class DocumentStore:
         else:
             target_collection = self.get_or_create_collection(collection_name)
 
-        if self.collection.count() > 0:
+        if target_collection.count() > 0:
             all_documents: GetResult = target_collection.get(include=['metadatas'], where={"chunk_idx": 0})
             all_metadatas: list[Mapping] = all_documents['metadatas']
             unique_documents: list[UniqueDocument] = []
