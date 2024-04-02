@@ -119,8 +119,8 @@ def delete(doc_ids: List[str] = Query(None)) -> None:
 
 
 @app.get("/list/")
-def list() -> list[UniqueDocument]:
-    return doc_store.get_all_documents()
+def list(collection_name: str = "default") -> list[UniqueDocument]:
+    return doc_store.get_all_documents(collection_name)
 
 
 @app.get("/healthz", status_code=200)

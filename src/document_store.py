@@ -27,19 +27,20 @@ class UniqueDocument(BaseModel):
     uuid: str
     source: str
 
+
 class DocumentStore:
     def __init__(self, default_collection_name="default"):
         self.default_collection_name = default_collection_name
         self.client: ClientAPI = chromadb.PersistentClient(path="db", settings=Settings(anonymized_telemetry=False))
         self.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "instructor-xl"
-        
+
         self.embeddings_function = embedding_functions.OpenAIEmbeddingFunction(
-                        api_key=os.environ.get("OPENAI_API_KEY"),
-                        api_base=os.environ.get("OPENAI_API_BASE"),
-                        api_type="openai",
-                        model_name=os.environ.get("EMBEDDING_MODEL_NAME"),
-                    )
-        
+            api_key=os.environ.get("OPENAI_API_KEY"),
+            api_base=os.environ.get("OPENAI_API_BASE"),
+            api_type="openai",
+            model_name=os.environ.get("EMBEDDING_MODEL_NAME"),
+        )
+
         self.embeddings: Embeddings = PassThroughEmbeddings(embed_fn=self.embeddings_function)
 
         self.collection: Collection = self.client.get_or_create_collection(name=default_collection_name,
@@ -97,10 +98,15 @@ class DocumentStore:
         return self.client.get_or_create_collection(name=collection_name,
                                                     embedding_function=self.embeddings_function)
 
+    def get_all_documents(self, collection_name: str = None) -> list[UniqueDocument]:
 
-    def get_all_documents(self) -> list[UniqueDocument]:
+        if collection_name is None:
+            target_collection = self.collection
+        else:
+            target_collection = self.get_or_create_collection(collection_name)
+
         if self.collection.count() > 0:
-            all_documents: GetResult = self.collection.get(include=['metadatas'], where={"chunk_idx": 0})
+            all_documents: GetResult = target_collection.get(include=['metadatas'], where={"chunk_idx": 0})
             all_metadatas: list[Mapping] = all_documents['metadatas']
             unique_documents: list[UniqueDocument] = []
             for metadata in all_metadatas:
