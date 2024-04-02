@@ -113,9 +113,9 @@ def query_raw(query_data: QueryModel) -> QueryResponse:
 
 
 @app.post("/delete/")
-def delete(doc_ids: List[str] = Query(None)) -> None:
+def delete(doc_ids: List[str] = Query(None), collection_name: str = "default") -> None:
     if len(doc_ids) > 0:
-        doc_store.delete_documents(doc_ids)
+        doc_store.delete_documents(doc_ids, collection_name)
 
 
 @app.get("/list/")

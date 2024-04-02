@@ -99,7 +99,6 @@ class DocumentStore:
                                                     embedding_function=self.embeddings_function)
 
     def get_all_documents(self, collection_name: str = None) -> list[UniqueDocument]:
-
         if collection_name is None:
             target_collection = self.collection
         else:
@@ -115,9 +114,14 @@ class DocumentStore:
         else:
             return []
 
-    def delete_documents(self, uuids: List[str]):
+    def delete_documents(self, uuids: List[str], collection_name: str = None):
+        if collection_name is None:
+            target_collection = self.collection
+        else:
+            target_collection = self.get_or_create_collection(collection_name)
+
         for uuid in uuids:
-            self.collection.delete(where={'uuid': uuid})
+            target_collection.delete(where={'uuid': uuid})
 
     def query_llamaindex(self, query_text: str, response_mode: str = None,
                          collection_name: str = "default") -> str | None:
