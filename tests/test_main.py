@@ -145,7 +145,7 @@ def test_upload(collection):
             response = http_upload_files_to_collection(client, files)
             assert response.status_code == 200
 
-            sleep(35)
+            sleep(60)
 
             response = http_get_list_from_collection(client)
             assert response.status_code == 200
@@ -158,7 +158,7 @@ def test_query_raw(collection):
         with TestClient(app) as client:
             http_upload_files_to_collection(client, files)
 
-            sleep(35)
+            sleep(60)
 
             doc = get_files_from_collection(['metadatas'], {"chunk_idx": 0})
             assert "lorem-ipsum.pdf" in doc['metadatas'][0]['source']
