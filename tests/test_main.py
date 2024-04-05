@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 from time import sleep
 
 from chromadb import Collection, GetResult
@@ -8,6 +9,7 @@ from fastapi.testclient import TestClient
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores.chroma import Chroma
 from llama_index import ServiceContext
+from tenacity import retry, wait_random_exponential, stop_after_attempt, stop_after_delay, wait_fixed
 
 import main
 from embedding_functions import PassThroughEmbeddingsFunction
@@ -36,7 +38,7 @@ def http_upload_files_to_collection(client: TestClient, files=None, collection_n
 
 def add_files_to_collection(ids: [str], embeddings: [int], metadatas: dict,
                             collection_name: str = TEST_COLLECTION_NAME):
-    test_collection = main.doc_store.get_or_create_collection(collection_name)
+    test_collection: Collection = main.doc_store.get_or_create_collection(collection_name)
     test_collection.add(ids=ids, embeddings=embeddings, metadatas=metadatas)
 
 
@@ -143,7 +145,7 @@ def test_upload(collection):
             response = http_upload_files_to_collection(client, files)
             assert response.status_code == 200
 
-            sleep(20)
+            sleep(35)
 
             response = http_get_list_from_collection(client)
             assert response.status_code == 200
@@ -156,7 +158,7 @@ def test_query_raw(collection):
         with TestClient(app) as client:
             http_upload_files_to_collection(client, files)
 
-            sleep(20)
+            sleep(35)
 
             doc = get_files_from_collection(['metadatas'], {"chunk_idx": 0})
             assert "lorem-ipsum.pdf" in doc['metadatas'][0]['source']
