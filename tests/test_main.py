@@ -2,11 +2,11 @@ import logging
 import os
 from time import sleep
 
+from chromadb import Collection, GetResult
 import pytest as pytest
 from fastapi.testclient import TestClient
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores.chroma import Chroma
-from langchain_core.embeddings import Embeddings
 from llama_index import ServiceContext
 
 import main
@@ -17,10 +17,39 @@ from main import app
 TEST_COLLECTION_NAME = "test"
 
 
+# Helper Functions
+def http_get_list_from_collection(client: TestClient, collection_name: str = TEST_COLLECTION_NAME):
+    return client.get("/list/", params={"collection_name": collection_name})
+
+
+def http_post_query_raw_from_collection(client: TestClient, query: str, collection_name: str = TEST_COLLECTION_NAME):
+    return client.post("/query/raw", json={"input": query, "collection_name": collection_name})
+
+
+def http_post_delete_ids_from_collection(client: TestClient, uuids: str, collection_name: str = TEST_COLLECTION_NAME):
+    client.post("/delete/", params={"doc_ids": uuids, "collection_name": collection_name})
+
+
+def http_upload_files_to_collection(client: TestClient, files=None, collection_name: str = TEST_COLLECTION_NAME):
+    return client.post("/upload/", files=files, params={"collection_name": collection_name})
+
+
+def add_files_to_collection(ids: [str], embeddings: [int], metadatas: dict,
+                            collection_name: str = TEST_COLLECTION_NAME):
+    test_collection = main.doc_store.get_or_create_collection(collection_name)
+    test_collection.add(ids=ids, embeddings=embeddings, metadatas=metadatas)
+
+
+def get_files_from_collection(include: [str], where: dict,
+                              collection_name: str = TEST_COLLECTION_NAME) -> GetResult:
+    test_collection: Collection = main.doc_store.get_or_create_collection(collection_name)
+    return test_collection.get(include=include, where=where)
+
+
 @pytest.fixture
 def collection():
     main.doc_store.embeddings_model_name = os.environ.get("EMBEDDING_MODEL_NAME") or "hkunlp/instructor-xl"
-    main.doc_store.embeddings: Embeddings = SentenceTransformerEmbeddings(
+    main.doc_store.embeddings = SentenceTransformerEmbeddings(
         model_name=main.doc_store.embeddings_model_name,
         model_kwargs={'device': 'cpu'},
     )
@@ -41,10 +70,6 @@ def collection():
         main.doc_store.client.delete_collection(TEST_COLLECTION_NAME)
     except ValueError:
         logging.debug("Collection does not exist, so it cannot be deleted.")
-
-    main.doc_store.collection = main.doc_store.client.get_or_create_collection(name=TEST_COLLECTION_NAME,
-                                                                               embedding_function=main.doc_store.embeddings_function)
-    main.doc_store.ingestor.collection = main.doc_store.collection
 
 
 def test_routes():
@@ -76,15 +101,14 @@ def test_healthz():
 
 def test_list(collection):
     with TestClient(app) as client:
-        response = client.get("/list/")
+        response = http_get_list_from_collection(client)
         assert response.status_code == 200
         assert len(response.json()) == 0
 
-        test_collection = main.doc_store.client.get_collection(TEST_COLLECTION_NAME)
-        test_collection.add(ids=["some-uuid"], embeddings=[15031, 12, 17566],
-                            metadatas=update_metadata("test", "some-uuid", 0, {}))
+        add_files_to_collection(["some-uuid"], [15031, 12, 17566],
+                                update_metadata("test", "some-uuid", 0, {}))
 
-        response = client.get("/list/")
+        response = http_get_list_from_collection(client, TEST_COLLECTION_NAME)
         assert response.status_code == 200
         assert len(response.json()) == 1
         assert response.json()[0]["source"] == "test"
@@ -92,58 +116,52 @@ def test_list(collection):
 
 def test_delete(collection):
     with TestClient(app) as client:
-        test_collection = main.doc_store.client.get_collection(TEST_COLLECTION_NAME)
-        test_collection.add(ids=["some-uuid"], embeddings=[15031, 12, 17566],
-                            metadatas=update_metadata("test", "some-uuid", 0, {}))
+        add_files_to_collection(["some-uuid"], [15031, 12, 17566],
+                                update_metadata("test", "some-uuid", 0, {}))
 
-        response = client.get("/list/")
+        response = http_get_list_from_collection(client)
         assert response.status_code == 200
         assert len(response.json()) == 1
         assert response.json()[0]["source"] == "test"
 
-        client.post("/delete/", params={"doc_ids": "some-uuid"})
+        http_post_delete_ids_from_collection(client, "some-uuid")
 
-        response = client.get("/list/")
+        response = http_get_list_from_collection(client)
         assert response.status_code == 200
         assert len(response.json()) == 0
 
 
 def test_upload(collection):
     with open("tests/resources/lorem-ipsum.pdf", "rb") as f:
-        _files = {'file': f}
+        files = {'file': f}
 
         with TestClient(app) as client:
-            response = client.get("/list/")
+            response = http_get_list_from_collection(client)
             assert response.status_code == 200
             assert len(response.json()) == 0
 
-            response = client.post("/upload/", files=_files)
+            response = http_upload_files_to_collection(client, files)
             assert response.status_code == 200
 
-            test_collection = main.doc_store.collection
-            while test_collection.count() == 0:
-                sleep(1)
+            sleep(20)
 
-            response = client.get("/list/")
+            response = http_get_list_from_collection(client)
             assert response.status_code == 200
             assert len(response.json()) == 1
 
 
 def test_query_raw(collection):
     with open("tests/resources/lorem-ipsum.pdf", "rb") as f:
-        _files = {'file': f}
+        files = {'file': f}
         with TestClient(app) as client:
-            client.post("/upload/", files=_files)
+            http_upload_files_to_collection(client, files)
 
-            test_collection = main.doc_store.collection
-            while test_collection.count() == 0:
-                sleep(1)
+            sleep(20)
 
-            doc = test_collection.get(include=['metadatas'], where={"chunk_idx": 0})
+            doc = get_files_from_collection(['metadatas'], {"chunk_idx": 0})
             assert "lorem-ipsum.pdf" in doc['metadatas'][0]['source']
 
-            response = client.post("/query/raw", json={"input": "lorem ipsum dolor",
-                                                       "collection_name": TEST_COLLECTION_NAME})
+            response = http_post_query_raw_from_collection(client, "lorem ipsum dolor")
             assert response.status_code == 200
             query_response: main.QueryResponse = response.json()
             assert "\xa0Lorem\xa0ipsum\xa0dolor" in query_response['results']
