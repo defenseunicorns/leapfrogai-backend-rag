@@ -17,6 +17,7 @@ env:
   sslVerification: "###ZARF_VAR_SSL_VERIFICATION###"
   prefix: "###ZARF_VAR_PREFIX###"
   embeddingModelName: "###ZARF_VAR_EMBEDDING_MODEL_NAME###"
+  topK: "###ZARF_VAR_TOP_K###"
 
 package:
   host: leapfrogai-rag

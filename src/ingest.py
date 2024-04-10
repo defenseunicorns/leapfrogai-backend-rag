@@ -68,7 +68,7 @@ class Ingest:
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
 
-    def process_file(self, file_name: str, file_path: str) -> None:
+    def process_file(self, file_name: str, file_path: str, active_collection: Collection) -> None:
         os.environ["TIKTOKEN_CACHE_DIR"] = "tokenizer-cache"
         # disallowed_special is set so that technical documents that contain special tokens can be loaded
         text_splitter = TokenTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap,
@@ -82,15 +82,19 @@ class Ingest:
                                         for idx, d in enumerate(texts)]
             ids: list[str] = get_uuids_for_document_texts(texts)
             logging.debug(f"Found {len(contents)} parts in file {file_path}")
-            self.collection.add(documents=contents, metadatas=all_metadata, ids=ids)
+            active_collection.add(documents=contents, metadatas=all_metadata, ids=ids)
             # split and load into vector db
-            logging.debug(f"File {file_name} loaded into collection {self.collection.name}")
+            logging.debug(f"File {file_name} loaded into collection {active_collection.name}")
         except Exception as e:
             logging.error(f"process_file: Error parsing file {file_path}.  {e}")
 
-    def load_file_bytes(self, file_bytes: bytes, file_name: str) -> None:
+    def load_file_bytes(self, file_bytes: bytes, file_name: str, active_collection: Collection = None) -> None:
+        # If not specified, use the default collection
+        if active_collection is None:
+            active_collection = self.collection
+
         _, file_extension = os.path.splitext(file_name)
         with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension, prefix=file_name) as fp:
             fp.write(file_bytes)
             fp.close()
-            self.process_file(file_name, fp.name)
+            self.process_file(file_name, fp.name, active_collection)
