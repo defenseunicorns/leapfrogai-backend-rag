@@ -595,7 +595,7 @@ tqdm==4.66.2
     #   openai
     #   sentence-transformers
     #   transformers
-transformers==4.37.2
+transformers==4.38.0
     # via
     #   sentence-transformers
     #   unstructured-inference
