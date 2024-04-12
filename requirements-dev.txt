@@ -157,7 +157,7 @@ huggingface-hub==0.20.3
     #   unstructured-inference
 humanfriendly==10.0
     # via coloredlogs
-idna==3.6
+idna==3.7
     # via
     #   anyio
     #   httpx
