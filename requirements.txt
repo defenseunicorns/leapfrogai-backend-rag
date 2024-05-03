@@ -573,7 +573,7 @@ torchvision==0.17.0
     #   effdet
     #   layoutparser
     #   timm
-tqdm==4.66.2
+tqdm==4.66.3
     # via
     #   chromadb
     #   huggingface-hub
