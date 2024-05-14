@@ -184,7 +184,7 @@ kiwisolver==1.4.5
     # via matplotlib
 kubernetes==29.0.0
     # via chromadb
-langchain==0.1.7
+langchain==0.1.11
     # via leapfrogai-backend-rag (pyproject.toml)
 langchain-community==0.0.20
     # via
