@@ -478,7 +478,7 @@ regex==2023.12.25
     #   nltk
     #   tiktoken
     #   transformers
-requests==2.31.0
+requests==2.32.0
     # via
     #   chromadb
     #   huggingface-hub
