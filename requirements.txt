@@ -203,7 +203,7 @@ langsmith==0.0.87
     #   langchain-core
 layoutparser[layoutmodels,tesseract]==0.3.4
     # via unstructured-inference
-llama-index==0.9.48
+llama-index==0.10.13
     # via leapfrogai-backend-rag (pyproject.toml)
 lxml==5.1.0
     # via
